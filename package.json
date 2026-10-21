@@ -1,0 +1,13 @@
+{
+  "name": "weblayanan-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portal Web Layanan Mahasiswa (Nuxt 4 Frontend & Laravel Backend)",
+  "scripts": {
+    "dev": "npm --prefix weblayananmahasiswa run dev",
+    "dev:frontend": "npm --prefix weblayananmahasiswa run dev",
+    "dev:backend": "cd beckend && php artisan serve",
+    "build": "npm --prefix weblayananmahasiswa run build",
+    "test:backend": "cd beckend && php artisan test"
+  }
+}

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\LayananController;
+use App\Http\Controllers\Api\PengajuanLayananController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,46 +25,18 @@ Route::get('/ping', function () {
     ]);
 });
 
-// Contoh endpoint layanan mahasiswa
-Route::get('/layanan', function () {
-    return response()->json([
-        'status' => 'success',
-        'data' => [
-            [
-                'id' => 1,
-                'nama' => 'Surat Keterangan Aktif Kuliah',
-                'kategori' => 'Administrasi',
-                'deskripsi' => 'Pengajuan surat keterangan aktif kuliah untuk keperluan beasiswa, magang, atau instansi.',
-                'status' => 'Tersedia',
-                'icon' => 'document'
-            ],
-            [
-                'id' => 2,
-                'nama' => 'Pengajuan Cuti Akademik',
-                'kategori' => 'Akademik',
-                'deskripsi' => 'Permohonan istirahat studi sementara sesuai ketentuan akademik kampus.',
-                'status' => 'Tersedia',
-                'icon' => 'pause'
-            ],
-            [
-                'id' => 3,
-                'nama' => 'Legalisir Dokumen Akademik',
-                'kategori' => 'Alumni & Kelulusan',
-                'deskripsi' => 'Pengajuan legalisasi ijazah, transkrip nilai, dan sertifikat akreditasi online.',
-                'status' => 'Tersedia',
-                'icon' => 'check-badge'
-            ],
-            [
-                'id' => 4,
-                'nama' => 'Konseling & Beasiswa Mahasiswa',
-                'kategori' => 'Kemahasiswaan',
-                'deskripsi' => 'Layanan bimbingan konseling dan pendaftaran beasiswa internal/eksternal.',
-                'status' => 'Tersedia',
-                'icon' => 'academic-cap'
-            ]
-        ]
-    ]);
-});
+// Master Layanan Mahasiswa
+Route::get('/layanan', [LayananController::class, 'index']);
+Route::get('/layanan/{id}', [LayananController::class, 'show']);
+
+// CRUD Pengajuan Layanan Mahasiswa
+Route::get('/pengajuan/stats', [PengajuanLayananController::class, 'stats']);
+Route::get('/pengajuan', [PengajuanLayananController::class, 'index']);
+Route::post('/pengajuan', [PengajuanLayananController::class, 'store']);
+Route::get('/pengajuan/{id}', [PengajuanLayananController::class, 'show']);
+Route::put('/pengajuan/{id}', [PengajuanLayananController::class, 'update']);
+Route::delete('/pengajuan/{id}', [PengajuanLayananController::class, 'destroy']);
+Route::patch('/pengajuan/{id}/status', [PengajuanLayananController::class, 'updateStatus']);
 
 // Endpoint data user terotentikasi (Sanctum)
 Route::get('/user', function (Request $request) {
