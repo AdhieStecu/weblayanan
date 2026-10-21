@@ -107,6 +107,9 @@ class PengajuanLayananController extends Controller
         }
 
         $validated = $validator->validated();
+        if (empty($validated['layanan_id']) && !empty($validated['jenis_layanan'])) {
+            $validated['layanan_id'] = \App\Models\Layanan::where('nama', $validated['jenis_layanan'])->value('id');
+        }
         $validated['kode_tiket'] = PengajuanLayanan::generateKodeTiket();
         $validated['status'] = 'menunggu';
         $validated['tanggal_pengajuan'] = now();
@@ -191,7 +194,12 @@ class PengajuanLayananController extends Controller
             ], 422);
         }
 
-        $pengajuan->update($validator->validated());
+        $data = $validator->validated();
+        if (empty($data['layanan_id']) && !empty($data['jenis_layanan'])) {
+            $data['layanan_id'] = \App\Models\Layanan::where('nama', $data['jenis_layanan'])->value('id');
+        }
+
+        $pengajuan->update($data);
 
         return response()->json([
             'status' => 'success',

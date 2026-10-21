@@ -741,16 +741,19 @@
             <div class="form-group">
               <label class="form-label required">NIM</label>
               <input v-model="editForm.nim" type="text" class="form-control font-mono" required />
+              <span v-if="editFormErrors.nim" class="error-text">{{ editFormErrors.nim[0] }}</span>
             </div>
 
             <div class="form-group">
               <label class="form-label required">Nama Mahasiswa</label>
               <input v-model="editForm.nama_mahasiswa" type="text" class="form-control" required />
+              <span v-if="editFormErrors.nama_mahasiswa" class="error-text">{{ editFormErrors.nama_mahasiswa[0] }}</span>
             </div>
 
             <div class="form-group">
               <label class="form-label required">Email</label>
               <input v-model="editForm.email" type="email" class="form-control" required />
+              <span v-if="editFormErrors.email" class="error-text">{{ editFormErrors.email[0] }}</span>
             </div>
 
             <div class="form-group">
@@ -769,6 +772,7 @@
                 <option value="Ilmu Hukum">Ilmu Hukum</option>
                 <option value="Sastra Inggris">Sastra Inggris</option>
               </select>
+              <span v-if="editFormErrors.program_studi" class="error-text">{{ editFormErrors.program_studi[0] }}</span>
             </div>
 
             <div class="form-group">
@@ -786,11 +790,13 @@
                 {{ lay.nama }}
               </option>
             </select>
+            <span v-if="editFormErrors.jenis_layanan" class="error-text">{{ editFormErrors.jenis_layanan[0] }}</span>
           </div>
 
           <div class="form-group">
             <label class="form-label required">Keperluan</label>
             <textarea v-model="editForm.keperluan" rows="3" class="form-control" required></textarea>
+            <span v-if="editFormErrors.keperluan" class="error-text">{{ editFormErrors.keperluan[0] }}</span>
           </div>
 
           <!-- Bagian Kontrol Petugas / Admin -->
@@ -992,6 +998,7 @@ const isSubmitting = ref(false)
 const selectedDetail = ref<Pengajuan | null>(null)
 const itemToDelete = ref<Pengajuan | null>(null)
 const formErrors = ref<Record<string, string[]>>({})
+const editFormErrors = ref<Record<string, string[]>>({})
 
 // Tracking State
 const trackingQuery = ref('')
@@ -1172,6 +1179,7 @@ const submitCreateForm = async () => {
 
 // 6. Edit Pengajuan (UPDATE)
 const openEditModal = (item: Pengajuan) => {
+  editFormErrors.value = {}
   Object.assign(editForm, {
     id: item.id,
     kode_tiket: item.kode_tiket,
@@ -1193,6 +1201,7 @@ const openEditModal = (item: Pengajuan) => {
 const submitEditForm = async () => {
   if (!editForm.id) return
   isSubmitting.value = true
+  editFormErrors.value = {}
   try {
     const res = await updatePengajuan(editForm.id, editForm)
     if (res.status === 'success') {
@@ -1201,7 +1210,12 @@ const submitEditForm = async () => {
       await Promise.all([loadPengajuan(), loadStats()])
     }
   } catch (err: any) {
-    addToast('error', 'Gagal Memperbarui', err?.data?.message || 'Gagal menyimpan perubahan.')
+    if (err?.data?.errors) {
+      editFormErrors.value = err.data.errors
+      addToast('error', 'Validasi Gagal', 'Periksa kembali data formulir.')
+    } else {
+      addToast('error', 'Gagal Memperbarui', err?.data?.message || 'Gagal menyimpan perubahan.')
+    }
   } finally {
     isSubmitting.value = false
   }
@@ -1826,6 +1840,11 @@ body {
   transform: translateY(-3px);
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
 }
+
+.card-border-menunggu { border-left: 4px solid var(--amber-border); }
+.card-border-diproses { border-left: 4px solid var(--blue-border); }
+.card-border-selesai { border-left: 4px solid var(--emerald-border); }
+.card-border-ditolak { border-left: 4px solid var(--rose-border); }
 
 .card-top {
   display: flex;
