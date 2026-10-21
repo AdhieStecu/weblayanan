@@ -3,6 +3,8 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: false },
 
+  css: ['~/assets/css/habit.css'],
+
   app: {
     head: {
       title: 'Portal Layanan Mahasiswa Terpadu',
