@@ -82,6 +82,17 @@ export function useApiClient() {
       Accept: 'application/json',
     },
     credentials: 'include',
+    onRequest({ options }) {
+      if (import.meta.client) {
+        const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/)
+        if (match && match[1]) {
+          options.headers = {
+            ...options.headers,
+            'X-XSRF-TOKEN': decodeURIComponent(match[1]),
+          }
+        }
+      }
+    },
   })
 
   // Inisialisasi CSRF cookie Sanctum SPA
