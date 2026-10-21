@@ -647,8 +647,10 @@
     </main>
 
     <!-- MODAL 1: CREATE PENGAJUAN (POST) -->
-    <div v-if="showCreateModal" class="modal-backdrop" @click.self="showCreateModal = false">
-      <div class="modal-card">
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showCreateModal" class="modal-backdrop" @click.self="showCreateModal = false">
+          <div class="modal-card">
         <div class="modal-header">
           <div>
             <h2 class="modal-title">Formulir Pengajuan Layanan Baru</h2>
@@ -779,12 +781,16 @@
             </button>
           </div>
         </form>
-      </div>
-    </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <!-- MODAL 2: EDIT PENGAJUAN (UPDATE) -->
-    <div v-if="showEditModal" class="modal-backdrop" @click.self="showEditModal = false">
-      <div class="modal-card">
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showEditModal" class="modal-backdrop" @click.self="showEditModal = false">
+          <div class="modal-card">
         <div class="modal-header">
           <div>
             <h2 class="modal-title">Edit Permohonan: <span class="font-mono text-primary">{{ editForm.kode_tiket }}</span></h2>
@@ -891,12 +897,16 @@
             </button>
           </div>
         </form>
-      </div>
-    </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <!-- MODAL 3: DETAIL PENGAJUAN (READ) -->
-    <div v-if="showDetailModal && selectedDetail" class="modal-backdrop" @click.self="showDetailModal = false">
-      <div class="modal-card modal-card-detail">
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showDetailModal && selectedDetail" class="modal-backdrop" @click.self="showDetailModal = false">
+          <div class="modal-card modal-card-detail">
         <div class="modal-header">
           <div>
             <span class="font-mono text-muted">Detail Tiket</span>
@@ -961,33 +971,39 @@
           <button class="btn btn-secondary" @click="showDetailModal = false">Tutup</button>
           <button class="btn btn-primary" @click="windowPrint">Cetak Tanda Terima</button>
         </div>
-      </div>
-    </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
 
     <!-- MODAL 4: KONFIRMASI HAPUS (DELETE) -->
-    <div v-if="showDeleteModal && itemToDelete" class="modal-backdrop" @click.self="showDeleteModal = false">
-      <div class="modal-card modal-card-sm">
-        <div class="delete-icon-box">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-        </div>
-        <h3 class="delete-title">Hapus Pengajuan Layanan?</h3>
-        <p class="delete-desc">
-          Apakah Anda yakin ingin menghapus tiket <strong class="font-mono">{{ itemToDelete.kode_tiket }}</strong> atas nama <strong>{{ itemToDelete.nama_mahasiswa }}</strong>? Tindakan ini tidak dapat dibatalkan.
-        </p>
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showDeleteModal && itemToDelete" class="modal-backdrop" @click.self="showDeleteModal = false">
+          <div class="modal-card modal-card-sm">
+            <div class="delete-icon-box">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <h3 class="delete-title">Hapus Pengajuan Layanan?</h3>
+            <p class="delete-desc">
+              Apakah Anda yakin ingin menghapus tiket <strong class="font-mono">{{ itemToDelete.kode_tiket }}</strong> atas nama <strong>{{ itemToDelete.nama_mahasiswa }}</strong>? Tindakan ini tidak dapat dibatalkan.
+            </p>
 
-        <div class="modal-footer justify-center">
-          <button class="btn btn-secondary" @click="showDeleteModal = false">Batal</button>
-          <button class="btn btn-danger" :disabled="isSubmitting" @click="confirmDelete">
-            <span v-if="isSubmitting" class="spin-anim">⏳</span>
-            <span v-else>Ya, Hapus Sekarang</span>
-          </button>
+            <div class="modal-footer justify-center">
+              <button class="btn btn-secondary" @click="showDeleteModal = false">Batal</button>
+              <button class="btn btn-danger" :disabled="isSubmitting" @click="confirmDelete">
+                <span v-if="isSubmitting" class="spin-anim">⏳</span>
+                <span v-else>Ya, Hapus Sekarang</span>
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </Transition>
+    </Teleport>
 
     <!-- Footer -->
     <footer class="app-footer">
