@@ -102,6 +102,50 @@
             </button>
           </div>
 
+          <!-- Auth Buttons / User Pill -->
+          <template v-if="isAuthenticated && user">
+            <div class="user-menu-group">
+              <button class="user-profile-btn" title="Klik untuk edit profil mahasiswa" @click="openProfileModal()">
+                <div class="user-avatar-circle">
+                  {{ (user.name || 'M').charAt(0).toUpperCase() }}
+                </div>
+                <div class="user-info-text">
+                  <span class="user-name-display">{{ user.name }}</span>
+                  <span class="user-nim-display">{{ user.nim || 'Mahasiswa' }}</span>
+                </div>
+              </button>
+
+              <button class="btn-logout-icon" title="Logout dari sistem" @click="handleLogout">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+          </template>
+          <template v-else>
+            <div class="user-menu-group">
+              <button class="btn-auth-outline" @click="showLoginModal = true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                  <polyline points="10 17 15 12 10 7"></polyline>
+                  <line x1="15" y1="12" x2="3" y2="12"></line>
+                </svg>
+                <span>Masuk</span>
+              </button>
+              <button class="btn-auth-solid" @click="showRegisterModal = true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="8.5" cy="7" r="4"></circle>
+                  <line x1="20" y1="8" x2="20" y2="14"></line>
+                  <line x1="23" y1="11" x2="17" y2="11"></line>
+                </svg>
+                <span>Daftar</span>
+              </button>
+            </div>
+          </template>
+
           <button class="btn btn-primary btn-glow" @click="openCreateModal()">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -231,6 +275,19 @@
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
             <span>Lacak Status Tiket</span>
+          </button>
+
+          <button
+            class="tab-btn"
+            :class="{ active: activeTab === 'profile' }"
+            @click="openProfileTab"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>Profil Mahasiswa</span>
+            <span v-if="isAuthenticated && user" class="tab-counter" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">✓</span>
           </button>
         </div>
 
@@ -644,6 +701,194 @@
           </div>
         </div>
       </section>
+
+      <!-- TAB 4: PROFIL MAHASISWA & EDIT PROFIL -->
+      <section v-if="activeTab === 'profile'" class="tab-pane">
+        <div class="profile-card-container">
+          <!-- If Authenticated -->
+          <div v-if="isAuthenticated && user" class="profile-section-wrapper">
+            <!-- Hero Card -->
+            <div class="profile-hero-card">
+              <div class="profile-hero-left">
+                <div class="profile-avatar-large">
+                  {{ (user.name || 'M').charAt(0).toUpperCase() }}
+                </div>
+                <div class="profile-hero-info">
+                  <div class="profile-hero-name">{{ user.name }}</div>
+                  <div class="profile-hero-meta">
+                    <span v-if="user.nim" class="profile-meta-nim">NIM: {{ user.nim }}</span>
+                    <span class="profile-meta-item">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                      </svg>
+                      {{ user.program_studi || 'Program Studi Umum' }} &bull; Semester {{ user.semester || 1 }}
+                    </span>
+                    <span class="profile-meta-item">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                      </svg>
+                      {{ user.email }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="profile-hero-actions">
+                <button class="btn btn-sm btn-outline-primary" @click="openCreateModal()">
+                  + Ajukan Layanan
+                </button>
+              </div>
+            </div>
+
+            <!-- Profile Edit Form Box -->
+            <div class="profile-form-box mt-4">
+              <div class="profile-section-heading">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span>Edit Data Profil Mahasiswa</span>
+              </div>
+
+              <div v-if="profileSuccessMessage" class="alert-liquid-info">
+                <span>✓ {{ profileSuccessMessage }}</span>
+              </div>
+
+              <form @submit.prevent="handleSaveProfile">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label required">Nama Lengkap Mahasiswa</label>
+                    <input
+                      v-model="profileForm.name"
+                      type="text"
+                      class="form-control"
+                      placeholder="Nama lengkap Anda"
+                      required
+                    />
+                    <span v-if="profileErrors.name" class="error-text">{{ profileErrors.name[0] }}</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label required">Alamat Email</label>
+                    <input
+                      v-model="profileForm.email"
+                      type="email"
+                      class="form-control"
+                      placeholder="email@student.ac.id"
+                      required
+                    />
+                    <span v-if="profileErrors.email" class="error-text">{{ profileErrors.email[0] }}</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">NIM (Nomor Induk Mahasiswa)</label>
+                    <input
+                      v-model="profileForm.nim"
+                      type="text"
+                      placeholder="Contoh: 2201010042"
+                      class="form-control font-mono"
+                    />
+                    <span v-if="profileErrors.nim" class="error-text">{{ profileErrors.nim[0] }}</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Program Studi</label>
+                    <select v-model="profileForm.program_studi" class="form-control">
+                      <option value="Teknik Informatika">Teknik Informatika</option>
+                      <option value="Sistem Informasi">Sistem Informasi</option>
+                      <option value="Ilmu Komunikasi">Ilmu Komunikasi</option>
+                      <option value="Manajemen Bisnis">Manajemen Bisnis</option>
+                      <option value="Akuntansi">Akuntansi</option>
+                      <option value="Desain Komunikasi Visual">Desain Komunikasi Visual</option>
+                      <option value="Teknik Elektro">Teknik Elektro</option>
+                      <option value="Hukum">Hukum</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Semester</label>
+                    <select v-model.number="profileForm.semester" class="form-control font-mono">
+                      <option v-for="s in 14" :key="s" :value="s">Semester {{ s }}</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">No. WhatsApp / HP</label>
+                    <input
+                      v-model="profileForm.no_hp"
+                      type="text"
+                      placeholder="Contoh: 08123456789"
+                      class="form-control font-mono"
+                    />
+                  </div>
+                </div>
+
+                <!-- Password Change Box -->
+                <div class="profile-password-box">
+                  <div class="profile-password-header">
+                    <div class="profile-password-title">Ganti Kata Sandi (Opsional)</div>
+                    <div class="profile-password-sub">Kosongkan jika Anda tidak ingin mengubah password akun Anda saat ini.</div>
+                  </div>
+
+                  <div class="form-grid-2">
+                    <div class="form-group">
+                      <label class="form-label">Password Saat Ini</label>
+                      <input
+                        v-model="profileForm.current_password"
+                        type="password"
+                        placeholder="Masukkan password saat ini"
+                        class="form-control"
+                      />
+                      <span v-if="profileErrors.current_password" class="error-text">{{ profileErrors.current_password[0] }}</span>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Password Baru</label>
+                      <input
+                        v-model="profileForm.new_password"
+                        type="password"
+                        placeholder="Minimal 6 karakter"
+                        class="form-control"
+                      />
+                      <span v-if="profileErrors.new_password" class="error-text">{{ profileErrors.new_password[0] }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4 flex gap-3 justify-end">
+                  <button type="submit" class="btn btn-primary" :disabled="isSavingProfile">
+                    <span v-if="isSavingProfile" class="spin-anim">⏳</span>
+                    <span v-else>Simpan Perubahan Profil</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- If Not Authenticated -->
+          <div v-else class="empty-state-card text-center p-5">
+            <div class="empty-icon-box mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mt-3 text-white">Akun Mahasiswa Belum Masuk</h3>
+            <p class="text-muted max-w-md mx-auto mt-2">
+              Silakan login atau daftar akun mahasiswa baru untuk mengelola profil Anda dan mengisi formulir pengajuan surat secara otomatis.
+            </p>
+            <div class="flex gap-3 justify-center mt-5">
+              <button class="btn btn-outline-primary" @click="showLoginModal = true">
+                Masuk ke Akun
+              </button>
+              <button class="btn btn-primary" @click="showRegisterModal = true">
+                Daftar Akun Mahasiswa
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <!-- MODAL 1: CREATE PENGAJUAN (POST) -->
@@ -660,6 +905,22 @@
         </div>
 
         <form @submit.prevent="submitCreateForm" class="modal-form">
+          <div v-if="isAuthenticated && user" class="alert-liquid-info">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>Data identitas telah terisi otomatis dari profil akun <strong>{{ user.name }}</strong> ({{ user.nim || 'NIM Aktif' }}).</span>
+          </div>
+          <div v-else class="alert-liquid-info" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.25); color: #bfdbfe;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Tips: <button type="button" class="auth-switch-btn" @click="showCreateModal = false; showLoginModal = true">Masuk ke akun</button> agar data identitas Anda terisi otomatis.</span>
+          </div>
+
           <div class="form-grid-2">
             <!-- NIM -->
             <div class="form-group">
@@ -1005,6 +1266,321 @@
       </Transition>
     </Teleport>
 
+    <!-- MODAL 5: LOGIN MAHASISWA -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showLoginModal" class="modal-backdrop" @click.self="showLoginModal = false">
+          <div class="modal-card" style="max-width: 480px;">
+            <div class="modal-header">
+              <div>
+                <h2 class="modal-title">Masuk Akun Mahasiswa</h2>
+                <p class="modal-subtitle">Akses data permohonan & kelola profil akademik Anda</p>
+              </div>
+              <button class="btn-close" @click="showLoginModal = false">×</button>
+            </div>
+
+            <form @submit.prevent="handleLogin" class="modal-form">
+              <div v-if="loginErrorMessage" class="alert-liquid-danger">
+                <span>⚠️ {{ loginErrorMessage }}</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label required">Email atau NIM</label>
+                <input
+                  v-model="loginForm.identifier"
+                  type="text"
+                  placeholder="Masukkan email mahasiswa atau NIM"
+                  class="form-control"
+                  required
+                />
+                <span v-if="loginErrors.identifier" class="error-text">{{ loginErrors.identifier[0] }}</span>
+              </div>
+
+              <div class="form-group mt-3">
+                <label class="form-label required">Kata Sandi</label>
+                <input
+                  v-model="loginForm.password"
+                  type="password"
+                  placeholder="Masukkan password akun Anda"
+                  class="form-control"
+                  required
+                />
+                <span v-if="loginErrors.password" class="error-text">{{ loginErrors.password[0] }}</span>
+              </div>
+
+              <div class="modal-footer mt-4">
+                <button type="button" class="btn btn-secondary" @click="showLoginModal = false">Batal</button>
+                <button type="submit" class="btn btn-primary" :disabled="isAuthLoading">
+                  <span v-if="isAuthLoading" class="spin-anim">⏳</span>
+                  <span v-else>Masuk Sekarang</span>
+                </button>
+              </div>
+
+              <div class="auth-switch-note">
+                Belum memiliki akun mahasiswa?
+                <button
+                  type="button"
+                  class="auth-switch-btn"
+                  @click="showLoginModal = false; showRegisterModal = true"
+                >
+                  Daftar Disini
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <!-- MODAL 6: REGISTER MAHASISWA -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showRegisterModal" class="modal-backdrop" @click.self="showRegisterModal = false">
+          <div class="modal-card" style="max-width: 580px;">
+            <div class="modal-header">
+              <div>
+                <h2 class="modal-title">Pendaftaran Akun Mahasiswa</h2>
+                <p class="modal-subtitle">Daftarkan akun untuk pengajuan layanan yang lebih cepat</p>
+              </div>
+              <button class="btn-close" @click="showRegisterModal = false">×</button>
+            </div>
+
+            <form @submit.prevent="handleRegister" class="modal-form">
+              <div v-if="registerErrorMessage" class="alert-liquid-danger">
+                <span>⚠️ {{ registerErrorMessage }}</span>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label required">Nama Lengkap</label>
+                  <input
+                    v-model="registerForm.name"
+                    type="text"
+                    placeholder="Nama sesuai KTM"
+                    class="form-control"
+                    required
+                  />
+                  <span v-if="registerErrors.name" class="error-text">{{ registerErrors.name[0] }}</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">Email Mahasiswa</label>
+                  <input
+                    v-model="registerForm.email"
+                    type="email"
+                    placeholder="email@student.ac.id"
+                    class="form-control"
+                    required
+                  />
+                  <span v-if="registerErrors.email" class="error-text">{{ registerErrors.email[0] }}</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">NIM (Nomor Induk Mahasiswa)</label>
+                  <input
+                    v-model="registerForm.nim"
+                    type="text"
+                    placeholder="Contoh: 2201010042"
+                    class="form-control font-mono"
+                  />
+                  <span v-if="registerErrors.nim" class="error-text">{{ registerErrors.nim[0] }}</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Program Studi</label>
+                  <select v-model="registerForm.program_studi" class="form-control">
+                    <option value="Teknik Informatika">Teknik Informatika</option>
+                    <option value="Sistem Informasi">Sistem Informasi</option>
+                    <option value="Ilmu Komunikasi">Ilmu Komunikasi</option>
+                    <option value="Manajemen Bisnis">Manajemen Bisnis</option>
+                    <option value="Akuntansi">Akuntansi</option>
+                    <option value="Desain Komunikasi Visual">Desain Komunikasi Visual</option>
+                    <option value="Teknik Elektro">Teknik Elektro</option>
+                    <option value="Hukum">Hukum</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Semester</label>
+                  <select v-model.number="registerForm.semester" class="form-control font-mono">
+                    <option v-for="s in 14" :key="s" :value="s">Semester {{ s }}</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">No. WhatsApp / HP</label>
+                  <input
+                    v-model="registerForm.no_hp"
+                    type="text"
+                    placeholder="08xxxxxxxxxx"
+                    class="form-control font-mono"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group mt-3">
+                <label class="form-label required">Kata Sandi</label>
+                <input
+                  v-model="registerForm.password"
+                  type="password"
+                  placeholder="Minimal 6 karakter"
+                  class="form-control"
+                  required
+                />
+                <span v-if="registerErrors.password" class="error-text">{{ registerErrors.password[0] }}</span>
+              </div>
+
+              <div class="modal-footer mt-4">
+                <button type="button" class="btn btn-secondary" @click="showRegisterModal = false">Batal</button>
+                <button type="submit" class="btn btn-primary" :disabled="isAuthLoading">
+                  <span v-if="isAuthLoading" class="spin-anim">⏳</span>
+                  <span v-else>Daftar & Masuk</span>
+                </button>
+              </div>
+
+              <div class="auth-switch-note">
+                Sudah memiliki akun mahasiswa?
+                <button
+                  type="button"
+                  class="auth-switch-btn"
+                  @click="showRegisterModal = false; showLoginModal = true"
+                >
+                  Masuk Disini
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
+    <!-- MODAL 7: EDIT PROFIL MAHASISWA MODAL -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showProfileModal" class="modal-backdrop" @click.self="showProfileModal = false">
+          <div class="modal-card modal-card-detail">
+            <div class="modal-header">
+              <div>
+                <h2 class="modal-title">Profil & Data Mahasiswa</h2>
+                <p class="modal-subtitle">Perbarui data diri untuk pengajuan layanan otomatis</p>
+              </div>
+              <button class="btn-close" @click="showProfileModal = false">×</button>
+            </div>
+
+            <form @submit.prevent="handleSaveProfile" class="modal-form">
+              <div v-if="profileSuccessMessage" class="alert-liquid-info">
+                <span>✓ {{ profileSuccessMessage }}</span>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label required">Nama Lengkap</label>
+                  <input
+                    v-model="profileForm.name"
+                    type="text"
+                    class="form-control"
+                    required
+                  />
+                  <span v-if="profileErrors.name" class="error-text">{{ profileErrors.name[0] }}</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">Email</label>
+                  <input
+                    v-model="profileForm.email"
+                    type="email"
+                    class="form-control"
+                    required
+                  />
+                  <span v-if="profileErrors.email" class="error-text">{{ profileErrors.email[0] }}</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">NIM (Nomor Induk Mahasiswa)</label>
+                  <input
+                    v-model="profileForm.nim"
+                    type="text"
+                    class="form-control font-mono"
+                  />
+                  <span v-if="profileErrors.nim" class="error-text">{{ profileErrors.nim[0] }}</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Program Studi</label>
+                  <select v-model="profileForm.program_studi" class="form-control">
+                    <option value="Teknik Informatika">Teknik Informatika</option>
+                    <option value="Sistem Informasi">Sistem Informasi</option>
+                    <option value="Ilmu Komunikasi">Ilmu Komunikasi</option>
+                    <option value="Manajemen Bisnis">Manajemen Bisnis</option>
+                    <option value="Akuntansi">Akuntansi</option>
+                    <option value="Desain Komunikasi Visual">Desain Komunikasi Visual</option>
+                    <option value="Teknik Elektro">Teknik Elektro</option>
+                    <option value="Hukum">Hukum</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Semester</label>
+                  <select v-model.number="profileForm.semester" class="form-control font-mono">
+                    <option v-for="s in 14" :key="s" :value="s">Semester {{ s }}</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">No. WhatsApp / HP</label>
+                  <input
+                    v-model="profileForm.no_hp"
+                    type="text"
+                    class="form-control font-mono"
+                  />
+                </div>
+              </div>
+
+              <!-- Ganti Password -->
+              <div class="profile-password-box">
+                <div class="profile-password-header">
+                  <div class="profile-password-title">Ganti Kata Sandi (Opsional)</div>
+                  <div class="profile-password-sub">Kosongkan jika tidak ingin mengubah kata sandi Anda.</div>
+                </div>
+
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label">Password Lama Saat Ini</label>
+                    <input
+                      v-model="profileForm.current_password"
+                      type="password"
+                      placeholder="Masukkan password lama"
+                      class="form-control"
+                    />
+                    <span v-if="profileErrors.current_password" class="error-text">{{ profileErrors.current_password[0] }}</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Password Baru</label>
+                    <input
+                      v-model="profileForm.new_password"
+                      type="password"
+                      placeholder="Minimal 6 karakter"
+                      class="form-control"
+                    />
+                    <span v-if="profileErrors.new_password" class="error-text">{{ profileErrors.new_password[0] }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-footer mt-4">
+                <button type="button" class="btn btn-secondary" @click="showProfileModal = false">Tutup</button>
+                <button type="submit" class="btn btn-primary" :disabled="isSavingProfile">
+                  <span v-if="isSavingProfile" class="spin-anim">⏳</span>
+                  <span v-else>Simpan Perubahan</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
     <!-- Footer -->
     <footer class="app-footer">
       <div class="footer-container">
@@ -1022,6 +1598,7 @@ import {
   type Pengajuan,
   type PengajuanStats
 } from '~/composables/useApi'
+import { useAuth } from '~/composables/useAuth'
 
 const {
   checkPing,
@@ -1034,8 +1611,21 @@ const {
   deletePengajuan,
 } = useApiClient()
 
+// Auth State & Methods
+const {
+  user,
+  token,
+  isAuthenticated,
+  isLoading: isAuthLoading,
+  initAuth,
+  login,
+  register: registerAuth,
+  updateProfile,
+  logout,
+} = useAuth()
+
 // Active Tab
-const activeTab = ref<'crud' | 'katalog' | 'tracking'>('crud')
+const activeTab = ref<'crud' | 'katalog' | 'tracking' | 'profile'>('crud')
 const viewMode = ref<'grid' | 'table'>('grid')
 
 // Backend Health State
@@ -1067,11 +1657,49 @@ const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const showDetailModal = ref(false)
 const showDeleteModal = ref(false)
+const showLoginModal = ref(false)
+const showRegisterModal = ref(false)
+const showProfileModal = ref(false)
+
 const isSubmitting = ref(false)
 const selectedDetail = ref<Pengajuan | null>(null)
 const itemToDelete = ref<Pengajuan | null>(null)
 const formErrors = ref<Record<string, string[]>>({})
 const editFormErrors = ref<Record<string, string[]>>({})
+
+// Auth & Profile Forms State
+const loginForm = reactive({
+  identifier: '',
+  password: '',
+})
+const loginErrors = ref<Record<string, string[]>>({})
+const loginErrorMessage = ref('')
+
+const registerForm = reactive({
+  name: '',
+  email: '',
+  password: '',
+  nim: '',
+  program_studi: 'Teknik Informatika',
+  semester: 1,
+  no_hp: '',
+})
+const registerErrors = ref<Record<string, string[]>>({})
+const registerErrorMessage = ref('')
+
+const profileForm = reactive({
+  name: '',
+  email: '',
+  nim: '',
+  program_studi: 'Teknik Informatika',
+  semester: 1,
+  no_hp: '',
+  current_password: '',
+  new_password: '',
+})
+const profileErrors = ref<Record<string, string[]>>({})
+const profileSuccessMessage = ref('')
+const isSavingProfile = ref(false)
 
 // Tracking State
 const trackingQuery = ref('')
@@ -1212,6 +1840,14 @@ const refreshAllData = async () => {
 // 5. Create Pengajuan (CREATE)
 const openCreateModal = (defaultService?: string) => {
   formErrors.value = {}
+  if (isAuthenticated.value && user.value) {
+    if (user.value.nim) createForm.nim = user.value.nim
+    if (user.value.name) createForm.nama_mahasiswa = user.value.name
+    if (user.value.email) createForm.email = user.value.email
+    if (user.value.no_hp) createForm.no_hp = user.value.no_hp
+    if (user.value.program_studi) createForm.program_studi = user.value.program_studi
+    if (user.value.semester) createForm.semester = user.value.semester
+  }
   if (defaultService) {
     createForm.jenis_layanan = defaultService
   } else if (!createForm.jenis_layanan && masterLayanan.value.length > 0) {
@@ -1425,7 +2061,120 @@ const particles = ref(
   }))
 )
 
+// 8. Auth & Profile Management
+const syncProfileForm = () => {
+  if (user.value) {
+    profileForm.name = user.value.name || ''
+    profileForm.email = user.value.email || ''
+    profileForm.nim = user.value.nim || ''
+    profileForm.program_studi = user.value.program_studi || 'Teknik Informatika'
+    profileForm.semester = user.value.semester || 1
+    profileForm.no_hp = user.value.no_hp || ''
+    profileForm.current_password = ''
+    profileForm.new_password = ''
+  }
+}
+
+const openProfileTab = () => {
+  syncProfileForm()
+  activeTab.value = 'profile'
+}
+
+const openProfileModal = () => {
+  syncProfileForm()
+  showProfileModal.value = true
+}
+
+const handleLogin = async () => {
+  loginErrors.value = {}
+  loginErrorMessage.value = ''
+  try {
+    const loggedIn = await login(loginForm.identifier, loginForm.password)
+    addToast('success', 'Selamat Datang!', `Berhasil masuk sebagai ${loggedIn.name}`)
+    showLoginModal.value = false
+    loginForm.identifier = ''
+    loginForm.password = ''
+    syncProfileForm()
+  } catch (err: any) {
+    if (err?.data?.errors) {
+      loginErrors.value = err.data.errors
+    }
+    loginErrorMessage.value = err?.data?.message || err?.message || 'Login gagal. Cek kembali akun Anda.'
+  }
+}
+
+const handleRegister = async () => {
+  registerErrors.value = {}
+  registerErrorMessage.value = ''
+  try {
+    const newUser = await registerAuth({
+      name: registerForm.name,
+      email: registerForm.email,
+      password: registerForm.password,
+      nim: registerForm.nim || undefined,
+      program_studi: registerForm.program_studi,
+      semester: Number(registerForm.semester),
+      no_hp: registerForm.no_hp || undefined,
+    })
+    addToast('success', 'Registrasi Berhasil!', `Selamat datang di SiLayanan, ${newUser.name}`)
+    showRegisterModal.value = false
+    syncProfileForm()
+  } catch (err: any) {
+    if (err?.data?.errors) {
+      registerErrors.value = err.data.errors
+    }
+    registerErrorMessage.value = err?.data?.message || err?.message || 'Pendaftaran gagal. Periksa kembali kelengkapan formulir.'
+  }
+}
+
+const handleLogout = async () => {
+  await logout()
+  addToast('info', 'Sesi Berakhir', 'Anda telah berhasil logout.')
+  if (activeTab.value === 'profile') {
+    activeTab.value = 'crud'
+  }
+}
+
+const handleSaveProfile = async () => {
+  isSavingProfile.value = true
+  profileErrors.value = {}
+  profileSuccessMessage.value = ''
+  try {
+    const payload: any = {
+      name: profileForm.name,
+      email: profileForm.email,
+      nim: profileForm.nim,
+      program_studi: profileForm.program_studi,
+      semester: Number(profileForm.semester),
+      no_hp: profileForm.no_hp,
+    }
+    if (profileForm.new_password) {
+      payload.current_password = profileForm.current_password
+      payload.new_password = profileForm.new_password
+    }
+    await updateProfile(payload)
+    profileSuccessMessage.value = 'Profil Anda berhasil diperbarui!'
+    addToast('success', 'Profil Diperbarui', 'Informasi akun mahasiswa berhasil disimpan.')
+    profileForm.current_password = ''
+    profileForm.new_password = ''
+    if (showProfileModal.value) {
+      setTimeout(() => {
+        showProfileModal.value = false
+      }, 700)
+    }
+  } catch (err: any) {
+    if (err?.data?.errors) {
+      profileErrors.value = err.data.errors
+    }
+    addToast('error', 'Gagal Simpan', err?.data?.message || err?.message || 'Terjadi kesalahan saat menyimpan profil.')
+  } finally {
+    isSavingProfile.value = false
+  }
+}
+
 onMounted(async () => {
+  await initAuth()
+  syncProfileForm()
   await checkBackendHealth()
   await Promise.all([loadMasterLayanan(), loadStats(), loadPengajuan()])
 })

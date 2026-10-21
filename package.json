@@ -4,10 +4,14 @@
   "private": true,
   "description": "Portal Web Layanan Mahasiswa (Nuxt 4 Frontend & Laravel Backend)",
   "scripts": {
-    "dev": "npm --prefix weblayananmahasiswa run dev",
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"magenta.bold,green.bold\" \"cd beckend && php artisan serve --port=8000\" \"npm --prefix weblayananmahasiswa run dev\"",
     "dev:frontend": "npm --prefix weblayananmahasiswa run dev",
-    "dev:backend": "cd beckend && php artisan serve",
+    "dev:backend": "cd beckend && php artisan serve --port=8000",
     "build": "npm --prefix weblayananmahasiswa run build",
-    "test:backend": "cd beckend && php artisan test"
+    "test": "cd beckend && ./vendor/bin/pest",
+    "test:backend": "cd beckend && ./vendor/bin/pest"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
   }
 }

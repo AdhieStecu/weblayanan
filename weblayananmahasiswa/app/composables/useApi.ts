@@ -58,11 +58,18 @@ export interface ApiResponse<T> {
  */
 export function useApi<T>(url: string | (() => string), options: UseFetchOptions<T> = {}) {
   const config = useRuntimeConfig()
+  const token = useState<string | null>('auth_token', () => null)
+
+  const authHeaders: Record<string, string> = {}
+  if (token.value) {
+    authHeaders['Authorization'] = `Bearer ${token.value}`
+  }
 
   return useFetch(url, {
     baseURL: config.public.apiBase,
     headers: {
       Accept: 'application/json',
+      ...authHeaders,
       ...options.headers,
     },
     credentials: 'include',
@@ -75,6 +82,7 @@ export function useApi<T>(url: string | (() => string), options: UseFetchOptions
  */
 export function useApiClient() {
   const config = useRuntimeConfig()
+  const token = useState<string | null>('auth_token', () => null)
 
   const apiFetch = $fetch.create({
     baseURL: config.public.apiBase,
@@ -83,6 +91,12 @@ export function useApiClient() {
     },
     credentials: 'include',
     onRequest({ options }) {
+      if (token.value) {
+        options.headers = {
+          ...options.headers,
+          Authorization: `Bearer ${token.value}`,
+        }
+      }
       if (import.meta.client) {
         const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/)
         if (match && match[1]) {
