@@ -1,0 +1,45 @@
+# OS files
+.DS_Store
+Thumbs.db
+*.log
+
+# Dependencies
+**/node_modules/
+**/vendor/
+
+# Environment files
+**/.env
+**/.env.backup
+**/.env.production
+!**/.env.example
+
+# Nuxt build & cache
+**/.output/
+**/.data/
+**/.nuxt/
+**/.nitro/
+**/.cache/
+**/dist/
+
+# Laravel build, cache & logs
+beckend/storage/*.key
+beckend/storage/pail/
+beckend/storage/framework/cache/*
+beckend/storage/framework/sessions/*
+beckend/storage/framework/views/*
+beckend/storage/logs/*
+beckend/bootstrap/cache/*.php
+beckend/public/build/
+beckend/public/hot/
+beckend/public/storage
+
+# SQLite Database
+*.sqlite
+*.sqlite-journal
+
+# IDE & Editor
+.idea/
+.vscode/
+.fleet/
+*.swp
+*.swo
