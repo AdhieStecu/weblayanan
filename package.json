@@ -8,6 +8,7 @@
     "dev:frontend": "npm --prefix weblayananmahasiswa run dev",
     "dev:backend": "cd beckend && php artisan serve --port=8000",
     "build": "npm --prefix weblayananmahasiswa run build",
+    "typecheck": "npm --prefix weblayananmahasiswa run typecheck",
     "test": "cd beckend && ./vendor/bin/pest",
     "test:backend": "cd beckend && ./vendor/bin/pest"
   },

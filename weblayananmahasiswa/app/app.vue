@@ -1786,8 +1786,9 @@ const loadMasterLayanan = async () => {
     const res = await getMasterLayanan()
     if (res.data) {
       masterLayanan.value = res.data
-      if (masterLayanan.value.length > 0 && !createForm.jenis_layanan) {
-        createForm.jenis_layanan = masterLayanan.value[0].nama
+      const firstService = masterLayanan.value[0]
+      if (firstService && !createForm.jenis_layanan) {
+        createForm.jenis_layanan = firstService.nama
       }
     }
   } catch (err) {
@@ -1850,7 +1851,7 @@ const openCreateModal = (defaultService?: string) => {
   }
   if (defaultService) {
     createForm.jenis_layanan = defaultService
-  } else if (!createForm.jenis_layanan && masterLayanan.value.length > 0) {
+  } else if (!createForm.jenis_layanan && masterLayanan.value[0]) {
     createForm.jenis_layanan = masterLayanan.value[0].nama
   }
   showCreateModal.value = true

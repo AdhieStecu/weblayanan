@@ -1,4 +1,4 @@
-import type { UseFetchOptions } from 'nuxt/app'
+import type { UseFetchOptions } from '#app'
 
 export interface MasterLayanan {
   id: number
@@ -91,21 +91,17 @@ export function useApiClient() {
     },
     credentials: 'include',
     onRequest({ options }) {
+      const headers = new Headers(options.headers)
       if (token.value) {
-        options.headers = {
-          ...options.headers,
-          Authorization: `Bearer ${token.value}`,
-        }
+        headers.set('Authorization', `Bearer ${token.value}`)
       }
       if (import.meta.client) {
         const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/)
         if (match && match[1]) {
-          options.headers = {
-            ...options.headers,
-            'X-XSRF-TOKEN': decodeURIComponent(match[1]),
-          }
+          headers.set('X-XSRF-TOKEN', decodeURIComponent(match[1]))
         }
       }
+      options.headers = headers
     },
   })
 
