@@ -1,29 +1,42 @@
 <template>
-  <div class="app-layout" @mousemove="handleMouseMove">
+  <div class="app-layout" :data-theme="currentThemeId" @mousemove="handleMouseMove">
     <!-- Habit Dynamic Animated Background System -->
     <div class="habit-background-stage" aria-hidden="true">
       <!-- Habit Ambient Image Layer -->
-      <div class="habit-bg-image"></div>
-
-      <!-- Interactive Dynamic Mouse Spotlight Glow -->
       <div
-        class="habit-mouse-spotlight"
+        class="habit-bg-image"
         :style="{
-          background: `radial-gradient(650px circle at ${mouseX}px ${mouseY}px, rgba(16, 185, 129, 0.18), transparent 70%)`
+          backgroundImage: `url('${activeWallpaperUrl}')`,
+          filter: `blur(${wallpaperBlur}px) brightness(0.88) contrast(1.08)`
         }"
       ></div>
 
-      <!-- Fluid Floating Glow Orbs (Habit Emerald / Mint / Forest) -->
-      <div class="dynamic-orb orb-emerald"></div>
-      <div class="dynamic-orb orb-mint"></div>
-      <div class="dynamic-orb orb-forest"></div>
+      <!-- Atmospheric Darkness Scrim: GUARANTEES contrast and zero 'warna nyaru' -->
+      <div
+        class="habit-scrim-overlay"
+        :style="{ opacity: wallpaperDarkness }"
+      ></div>
+
+      <!-- Interactive Dynamic Mouse Spotlight Glow -->
+      <div
+        v-if="spotlightEnabled"
+        class="habit-mouse-spotlight"
+        :style="{
+          background: `radial-gradient(650px circle at ${mouseX}px ${mouseY}px, ${activeThemeConfig.spotlightGlow}, transparent 70%)`
+        }"
+      ></div>
+
+      <!-- Fluid Floating Glow Orbs (Dynamic to active theme) -->
+      <div class="dynamic-orb orb-1"></div>
+      <div class="dynamic-orb orb-2"></div>
+      <div class="dynamic-orb orb-3"></div>
       <div class="dynamic-orb orb-pulse"></div>
 
       <!-- Subtle Cyber Grid Mesh -->
       <div class="habit-grid-mesh"></div>
 
       <!-- Ambient Floating Sparks / Particles -->
-      <div class="habit-particles">
+      <div v-if="particlesEnabled" class="habit-particles">
         <span
           v-for="p in particles"
           :key="p.id"
@@ -84,11 +97,18 @@
         </div>
 
         <div class="navbar-actions">
-          <!-- Dynamic Background Toggle indicator -->
-          <div class="theme-tag">
+          <!-- Dynamic Background & Wallpaper Toggle Button -->
+          <button
+            class="theme-tag-btn"
+            title="Ganti Wallpaper & Tema Tampilan"
+            @click="showWallpaperModal = true"
+          >
             <span class="theme-dot"></span>
-            <span>Habit Glow</span>
-          </div>
+            <span class="theme-name">{{ activeThemeConfig.name }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="theme-chevron">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
 
           <!-- Backend Connection Badge -->
           <div class="status-indicator" :class="connectionStatus">
@@ -1581,6 +1601,177 @@
       </Transition>
     </Teleport>
 
+    <!-- ==================================================================== -->
+    <!-- MODAL: PERSONALISASI WALLPAPER & TEMA                                -->
+    <!-- ==================================================================== -->
+    <Teleport to="body">
+      <Transition name="modal">
+        <div v-if="showWallpaperModal" class="modal-backdrop" @click.self="showWallpaperModal = false">
+          <div class="modal-card modal-card-wallpaper">
+            <div class="modal-header">
+              <div class="modal-title-group">
+                <div class="modal-icon-badge wallpaper-modal-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                    <circle cx="9" cy="9" r="2"/>
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="modal-title">Ganti Wallpaper & Tema Tampilan</h3>
+                  <p class="modal-subtitle">Pilih latar visual favorit Anda. Komponen teks dan kartu dijamin tetap tajam, kontras tinggi, dan tidak nyaru.</p>
+                </div>
+              </div>
+              <button class="btn-close-modal" @click="showWallpaperModal = false">&times;</button>
+            </div>
+
+            <div class="modal-body wallpaper-modal-body">
+              <!-- Section: Preset Wallpapers -->
+              <div class="wallpaper-section-title">
+                <span>Preset Wallpaper Atmosferik</span>
+                <span class="wallpaper-count-badge">6 Tema Tersedia</span>
+              </div>
+
+              <div class="wallpaper-presets-grid">
+                <button
+                  v-for="preset in wallpaperPresets"
+                  :key="preset.id"
+                  class="wallpaper-card-item"
+                  :class="{ 'active': currentThemeId === preset.id && wallpaperType === 'preset' }"
+                  @click="selectPreset(preset.id)"
+                >
+                  <div class="wallpaper-thumb-wrapper">
+                    <img :src="preset.thumbnail" :alt="preset.name" class="wallpaper-thumb-img" loading="lazy" />
+                    <div class="wallpaper-thumb-overlay" :style="{ background: preset.thumbTint }"></div>
+                    <div v-if="currentThemeId === preset.id && wallpaperType === 'preset'" class="wallpaper-active-check">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="wallpaper-item-meta">
+                    <div class="wallpaper-item-name">
+                      <span class="wallpaper-item-dot" :style="{ background: preset.dotColor }"></span>
+                      <span>{{ preset.name }}</span>
+                    </div>
+                    <div class="wallpaper-item-desc">{{ preset.desc }}</div>
+                  </div>
+                </button>
+              </div>
+
+              <!-- Section: Custom Wallpaper -->
+              <div class="wallpaper-section-title mt-2">
+                <span>Wallpaper Kustom Sendiri</span>
+                <span class="font-xs text-muted">Upload gambar atau masukkan URL gambar</span>
+              </div>
+
+              <div class="wallpaper-custom-container">
+                <div class="custom-input-row">
+                  <input
+                    v-model="customUrlInput"
+                    type="url"
+                    class="form-control font-sm font-mono"
+                    placeholder="https://... URL gambar dari web (Unsplash, dll)"
+                    @keyup.enter="applyCustomWallpaperUrl"
+                  />
+                  <button
+                    class="btn-custom-apply"
+                    :disabled="!customUrlInput.trim()"
+                    @click="applyCustomWallpaperUrl"
+                  >
+                    Terapkan URL
+                  </button>
+                </div>
+
+                <div class="custom-file-row">
+                  <label class="btn-custom-upload" for="wallpaper-file-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <span>Upload Gambar dari Laptop / Komputer</span>
+                  </label>
+                  <input
+                    id="wallpaper-file-input"
+                    type="file"
+                    accept="image/*"
+                    class="sr-only"
+                    @change="handleFileUpload"
+                  />
+                  <span v-if="wallpaperType === 'custom'" class="badge-custom-active">
+                    ✓ Wallpaper Kustom Aktif
+                  </span>
+                </div>
+              </div>
+
+              <!-- Section: Contrast & Aesthetics Protection Controls -->
+              <div class="wallpaper-section-title mt-2">
+                <span>Proteksi Kontras & Efek Visual</span>
+                <span class="font-xs text-primary">Jaminan Teks & Komponen Tetap Nyaman Dibaca</span>
+              </div>
+
+              <div class="wallpaper-tuning-box">
+                <div class="tuning-slider-row">
+                  <div class="tuning-label-group">
+                    <label class="tuning-label">Kegelapan Lapisan Latar (Scrim Atmosferik)</label>
+                    <span class="tuning-value font-mono">{{ Math.round(wallpaperDarkness * 100) }}%</span>
+                  </div>
+                  <input
+                    v-model.number="wallpaperDarkness"
+                    type="range"
+                    min="0.30"
+                    max="0.88"
+                    step="0.02"
+                    class="range-slider"
+                    @input="saveWallpaperPreferences"
+                  />
+                  <div class="tuning-hint">Menjaga teks dan kartu tetap kontras tinggi sehingga tidak pernah bertabrakan atau nyaru dengan gambar latar.</div>
+                </div>
+
+                <div class="tuning-slider-row">
+                  <div class="tuning-label-group">
+                    <label class="tuning-label">Tingkat Blur Latar (Kedalaman Optik)</label>
+                    <span class="tuning-value font-mono">{{ wallpaperBlur }}px</span>
+                  </div>
+                  <input
+                    v-model.number="wallpaperBlur"
+                    type="range"
+                    min="0"
+                    max="28"
+                    step="2"
+                    class="range-slider"
+                    @input="saveWallpaperPreferences"
+                  />
+                  <div class="tuning-hint">Melembutkan detail gambar latar agar elemen antarmuka tetap bersih, fokus, dan tidak pusing dilihat.</div>
+                </div>
+
+                <div class="tuning-toggles-row">
+                  <label class="tuning-toggle-item">
+                    <input v-model="particlesEnabled" type="checkbox" @change="saveWallpaperPreferences" />
+                    <span class="toggle-text">Efek Partikel Berpendar</span>
+                  </label>
+                  <label class="tuning-toggle-item">
+                    <input v-model="spotlightEnabled" type="checkbox" @change="saveWallpaperPreferences" />
+                    <span class="toggle-text">Sorotan Cahaya Kursor (Spotlight)</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button class="btn btn-secondary" @click="resetToDefaultTheme">
+                Reset ke Bawaan
+              </button>
+              <button class="btn btn-primary" @click="confirmAndCloseWallpaperModal">
+                Selesai & Simpan
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
     <!-- Footer -->
     <footer class="app-footer">
       <div class="footer-container">
@@ -1591,7 +1782,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import {
   useApiClient,
   type MasterLayanan,
@@ -2041,6 +2232,200 @@ const windowPrint = () => {
   window.print()
 }
 
+// Wallpaper & Theme Customization System
+interface WallpaperPreset {
+  id: string
+  name: string
+  desc: string
+  bgUrl: string
+  thumbnail: string
+  dotColor: string
+  thumbTint: string
+  spotlightGlow: string
+}
+
+const wallpaperPresets: WallpaperPreset[] = [
+  {
+    id: 'emerald',
+    name: 'Habit Emerald',
+    desc: 'Latar default bernuansa hutan cyber dengan pendar zamrud & mint.',
+    bgUrl: '/bg/habit-bg.jpg',
+    thumbnail: '/bg/habit-bg.jpg',
+    dotColor: '#10b981',
+    thumbTint: 'rgba(16, 185, 129, 0.25)',
+    spotlightGlow: 'rgba(16, 185, 129, 0.22)',
+  },
+  {
+    id: 'nebula',
+    name: 'Midnight Nebula',
+    desc: 'Nuansa angkasa kosmik biru sapphire & lembayung bintang.',
+    bgUrl: '/bg/nebula-bg.jpg',
+    thumbnail: '/bg/nebula-bg.jpg',
+    dotColor: '#3b82f6',
+    thumbTint: 'rgba(59, 130, 246, 0.25)',
+    spotlightGlow: 'rgba(59, 130, 246, 0.22)',
+  },
+  {
+    id: 'cyberpunk',
+    name: 'Cyberpunk Obsidian',
+    desc: 'Geometris arang gelap dengan pendar amber neon & rubi.',
+    bgUrl: '/bg/cyberpunk-bg.jpg',
+    thumbnail: '/bg/cyberpunk-bg.jpg',
+    dotColor: '#f43f5e',
+    thumbTint: 'rgba(244, 63, 94, 0.25)',
+    spotlightGlow: 'rgba(244, 63, 94, 0.22)',
+  },
+  {
+    id: 'aurora',
+    name: 'Deep Aurora',
+    desc: 'Pendar cahaya kutub utara teal & cyan malam dramatis.',
+    bgUrl: '/bg/aurora-bg.jpg',
+    thumbnail: '/bg/aurora-bg.jpg',
+    dotColor: '#06b6d4',
+    thumbTint: 'rgba(6, 182, 212, 0.25)',
+    spotlightGlow: 'rgba(6, 182, 212, 0.22)',
+  },
+  {
+    id: 'amethyst',
+    name: 'Dark Amethyst',
+    desc: 'Kemewahan kristal ungu violet & kabut eterik berkelas.',
+    bgUrl: '/bg/amethyst-bg.jpg',
+    thumbnail: '/bg/amethyst-bg.jpg',
+    dotColor: '#8b5cf6',
+    thumbTint: 'rgba(139, 92, 246, 0.25)',
+    spotlightGlow: 'rgba(139, 92, 246, 0.22)',
+  },
+  {
+    id: 'slate',
+    name: 'Minimal Slate',
+    desc: 'OLED hitam murni grafit dengan tekstur matte perak minimalis.',
+    bgUrl: '/bg/slate-bg.jpg',
+    thumbnail: '/bg/slate-bg.jpg',
+    dotColor: '#cbd5e1',
+    thumbTint: 'rgba(203, 213, 225, 0.2)',
+    spotlightGlow: 'rgba(148, 163, 184, 0.2)',
+  },
+]
+
+// State Personalisasi Wallpaper
+const showWallpaperModal = ref(false)
+const currentThemeId = ref('emerald')
+const wallpaperType = ref<'preset' | 'custom'>('preset')
+const customWallpaperUrl = ref('')
+const customUrlInput = ref('')
+const wallpaperBlur = ref(14)
+const wallpaperDarkness = ref(0.65)
+const particlesEnabled = ref(true)
+const spotlightEnabled = ref(true)
+
+// Computed Active Wallpaper & Config
+const activeThemeConfig = computed(() => {
+  return wallpaperPresets.find(p => p.id === currentThemeId.value) || wallpaperPresets[0]
+})
+
+const activeWallpaperUrl = computed(() => {
+  if (wallpaperType.value === 'custom' && customWallpaperUrl.value) {
+    return customWallpaperUrl.value
+  }
+  return activeThemeConfig.value.bgUrl
+})
+
+const selectPreset = (presetId: string) => {
+  currentThemeId.value = presetId
+  wallpaperType.value = 'preset'
+  saveWallpaperPreferences()
+  addToast('success', 'Tema Diganti', `Wallpaper & tema ${activeThemeConfig.value.name} aktif.`)
+}
+
+const applyCustomWallpaperUrl = () => {
+  if (!customUrlInput.value.trim()) return
+  customWallpaperUrl.value = customUrlInput.value.trim()
+  wallpaperType.value = 'custom'
+  currentThemeId.value = 'custom'
+  saveWallpaperPreferences()
+  addToast('success', 'Wallpaper Kustom Aktif', 'Gambar dari URL berhasil diterapkan dengan proteksi kontras.')
+}
+
+const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (!target.files || target.files.length === 0) return
+  const file = target.files[0]
+  if (file.size > 8 * 1024 * 1024) {
+    addToast('error', 'Ukuran Terlalu Besar', 'Maksimal ukuran wallpaper adalah 8MB.')
+    return
+  }
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    if (e.target?.result) {
+      customWallpaperUrl.value = e.target.result as string
+      wallpaperType.value = 'custom'
+      currentThemeId.value = 'custom'
+      saveWallpaperPreferences()
+      addToast('success', 'Wallpaper Kustom Aktif', 'Gambar lokal berhasil dimuat sebagai latar.')
+    }
+  }
+  reader.readAsDataURL(file)
+}
+
+const resetToDefaultTheme = () => {
+  currentThemeId.value = 'emerald'
+  wallpaperType.value = 'preset'
+  customWallpaperUrl.value = ''
+  customUrlInput.value = ''
+  wallpaperBlur.value = 14
+  wallpaperDarkness.value = 0.65
+  particlesEnabled.value = true
+  spotlightEnabled.value = true
+  saveWallpaperPreferences()
+  addToast('info', 'Reset Berhasil', 'Wallpaper dan tema dikembalikan ke Habit Emerald default.')
+}
+
+const confirmAndCloseWallpaperModal = () => {
+  saveWallpaperPreferences()
+  showWallpaperModal.value = false
+  addToast('success', 'Tersimpan', 'Preferensi wallpaper Anda tersimpan dengan aman.')
+}
+
+const saveWallpaperPreferences = () => {
+  if (typeof window === 'undefined') return
+  try {
+    const pref = {
+      themeId: currentThemeId.value,
+      wallpaperType: wallpaperType.value,
+      customUrl: customWallpaperUrl.value,
+      blur: wallpaperBlur.value,
+      darkness: wallpaperDarkness.value,
+      particles: particlesEnabled.value,
+      spotlight: spotlightEnabled.value,
+    }
+    localStorage.setItem('silayanan_wallpaper_pref', JSON.stringify(pref))
+  } catch (e) {
+    // ignore
+  }
+}
+
+const loadWallpaperPreferences = () => {
+  if (typeof window === 'undefined') return
+  try {
+    const saved = localStorage.getItem('silayanan_wallpaper_pref')
+    if (saved) {
+      const pref = JSON.parse(saved)
+      if (pref.themeId) currentThemeId.value = pref.themeId
+      if (pref.wallpaperType) wallpaperType.value = pref.wallpaperType
+      if (pref.customUrl) {
+        customWallpaperUrl.value = pref.customUrl
+        customUrlInput.value = pref.customUrl
+      }
+      if (typeof pref.blur === 'number') wallpaperBlur.value = pref.blur
+      if (typeof pref.darkness === 'number') wallpaperDarkness.value = pref.darkness
+      if (typeof pref.particles === 'boolean') particlesEnabled.value = pref.particles
+      if (typeof pref.spotlight === 'boolean') spotlightEnabled.value = pref.spotlight
+    }
+  } catch (e) {
+    // fallback
+  }
+}
+
 // Habit Dynamic Background State & Ambient Sparkles
 const mouseX = ref(600)
 const mouseY = ref(300)
@@ -2174,6 +2559,7 @@ const handleSaveProfile = async () => {
 }
 
 onMounted(async () => {
+  loadWallpaperPreferences()
   await initAuth()
   syncProfileForm()
   await checkBackendHealth()
