@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CmsController;
 use App\Http\Controllers\Api\LayananController;
 use App\Http\Controllers\Api\PengajuanLayananController;
 use Illuminate\Http\Request;
@@ -17,7 +18,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Tes koneksi frontend <-> backend
-Route::get('/ping', function () {
+Route::get('/ping', function (\Illuminate\Http\Request $request) {
+    if (! $request->wantsJson() && ! $request->query('format') && $request->acceptsHtml()) {
+        return view('health');
+    }
+
     return response()->json([
         'status' => 'connected',
         'message' => 'API Backend Laravel berhasil terhubung dengan Frontend Nuxt!',
@@ -38,6 +43,9 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+// Manajemen Pengguna (Admin)
+Route::get('/users', [AuthController::class, 'users']);
+
 // Master Layanan Mahasiswa
 Route::get('/layanan', [LayananController::class, 'index']);
 Route::get('/layanan/{id}', [LayananController::class, 'show']);
@@ -50,6 +58,17 @@ Route::get('/pengajuan/{id}', [PengajuanLayananController::class, 'show']);
 Route::put('/pengajuan/{id}', [PengajuanLayananController::class, 'update']);
 Route::delete('/pengajuan/{id}', [PengajuanLayananController::class, 'destroy']);
 Route::patch('/pengajuan/{id}/status', [PengajuanLayananController::class, 'updateStatus']);
+Route::post('/pengajuan/{id}/approve', [PengajuanLayananController::class, 'approve']);
+Route::post('/pengajuan/{id}/reject', [PengajuanLayananController::class, 'reject']);
+
+// Content Management System (Landing Page & Postman Image Upload)
+Route::prefix('cms')->group(function () {
+    Route::get('/content', [CmsController::class, 'index']);
+    Route::get('/content/{key}', [CmsController::class, 'show']);
+    Route::post('/content', [CmsController::class, 'update']);
+    Route::post('/upload', [CmsController::class, 'uploadImage']);
+    Route::post('/reset', [CmsController::class, 'reset']);
+});
 
 // Endpoint data user terotentikasi (Sanctum fallback)
 Route::get('/user', function (Request $request) {

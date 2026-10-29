@@ -21,6 +21,7 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6'],
+            'role' => ['nullable', 'string', Rule::in(['admin', 'user', 'mahasiswa'])],
             'nim' => ['nullable', 'string', 'max:30', 'unique:users,nim'],
             'program_studi' => ['nullable', 'string', 'max:100'],
             'semester' => ['nullable', 'integer', 'min:1', 'max:14'],
@@ -36,6 +37,8 @@ class AuthController extends Controller
             'nim.unique' => 'NIM ini sudah terdaftar.',
         ]);
 
+        $role = ($validated['role'] ?? 'mahasiswa') === 'admin' ? 'admin' : 'mahasiswa';
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -45,7 +48,7 @@ class AuthController extends Controller
             'semester' => $validated['semester'] ?? 1,
             'no_hp' => $validated['no_hp'] ?? null,
             'avatar_url' => $validated['avatar_url'] ?? null,
-            'role' => 'mahasiswa',
+            'role' => $role,
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -198,6 +201,36 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Logout berhasil. Sesi telah diakhiri.',
+        ]);
+    }
+
+    /**
+     * Ambil daftar seluruh user (Khusus Administrator).
+     */
+    public function users(Request $request): JsonResponse
+    {
+        $query = User::select('id', 'name', 'email', 'nim', 'role', 'program_studi', 'semester', 'no_hp', 'created_at');
+
+        if ($request->filled('role') && $request->query('role') !== 'semua') {
+            $query->where('role', $request->query('role'));
+        }
+
+        if ($request->filled('search')) {
+            $search = trim((string) $request->query('search'));
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('nim', 'like', "%{$search}%")
+                  ->orWhere('program_studi', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->orderBy('created_at', 'desc')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $users,
+            'total' => $users->count(),
         ]);
     }
 }

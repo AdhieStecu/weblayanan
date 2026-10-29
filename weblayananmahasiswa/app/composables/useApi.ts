@@ -43,6 +43,29 @@ export interface PengajuanStats {
   ditolak: number
 }
 
+export interface CmsSettings {
+  hero_banner_image: string
+  hero_title: string
+  hero_subtitle: string
+  faculty_name: string
+  campus_name: string
+  notice_text: string
+  announcement_badge: string
+  contact_whatsapp: string
+  contact_email: string
+}
+
+export interface CmsContentItem {
+  id: number
+  key: string
+  value: string
+  type: string
+  group: string
+  description: string
+  created_at?: string
+  updated_at?: string
+}
+
 export interface ApiResponse<T> {
   status: 'success' | 'error' | 'connected'
   message?: string
@@ -178,6 +201,68 @@ export function useApiClient() {
     })
   }
 
+  // Setujui pengajuan layanan oleh Administrator (APPROVE)
+  const approvePengajuan = async (id: number, catatanPetugas?: string) => {
+    return await apiFetch<ApiResponse<Pengajuan>>(`/pengajuan/${id}/approve`, {
+      method: 'POST',
+      body: {
+        catatan_petugas: catatanPetugas,
+      },
+    })
+  }
+
+  // Tolak pengajuan layanan oleh Administrator (REJECT)
+  const rejectPengajuan = async (id: number, catatanPetugas: string) => {
+    return await apiFetch<ApiResponse<Pengajuan>>(`/pengajuan/${id}/reject`, {
+      method: 'POST',
+      body: {
+        catatan_petugas: catatanPetugas,
+      },
+    })
+  }
+
+  // Ambil pengaturan konten CMS landing page
+  const getCmsContent = async () => {
+    return await apiFetch<{
+      status: string
+      message: string
+      data: {
+        settings: CmsSettings
+        items: CmsContentItem[]
+      }
+    }>('/cms/content')
+  }
+
+  // Update teks/pengaturan CMS (POST)
+  const updateCmsContent = async (payload: { key: string; value: string }) => {
+    return await apiFetch<ApiResponse<any>>('/cms/content', {
+      method: 'POST',
+      body: payload,
+    })
+  }
+
+  // Upload gambar CMS lewat API (POST multipart)
+  const uploadCmsImage = async (formData: FormData) => {
+    return await apiFetch<ApiResponse<any>>('/cms/upload', {
+      method: 'POST',
+      body: formData,
+    })
+  }
+
+  // Reset CMS ke default UMPKU (POST)
+  const resetCmsContent = async () => {
+    return await apiFetch<ApiResponse<any>>('/cms/reset', {
+      method: 'POST',
+    })
+  }
+
+  // Mengambil daftar seluruh pengguna terdaftar (Admin)
+  const getAllUsers = async (params?: { role?: string; search?: string }) => {
+    return await apiFetch<ApiResponse<any[]>>('/users', {
+      params,
+    })
+  }
+
   return {
     apiFetch,
     getCsrfCookie,
@@ -190,5 +275,12 @@ export function useApiClient() {
     updatePengajuan,
     deletePengajuan,
     updatePengajuanStatus,
+    approvePengajuan,
+    rejectPengajuan,
+    getCmsContent,
+    updateCmsContent,
+    uploadCmsImage,
+    resetCmsContent,
+    getAllUsers,
   }
 }

@@ -125,11 +125,12 @@ export function useAuth() {
     }
   }
 
-  // Registrasi akun mahasiswa baru
+  // Registrasi akun mahasiswa / admin baru
   const register = async (payload: {
     name: string
     email: string
     password: string
+    role?: string
     nim?: string
     program_studi?: string
     semester?: number

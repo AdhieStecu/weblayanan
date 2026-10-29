@@ -27,6 +27,14 @@ class PengajuanLayananController extends Controller
             $query->where('jenis_layanan', $request->query('jenis_layanan'));
         }
 
+        // Filter riwayat pengajuan milik akun mahasiswa tertentu
+        if ($request->filled('email')) {
+            $query->where('email', $request->query('email'));
+        }
+        if ($request->filled('nim')) {
+            $query->where('nim', $request->query('nim'));
+        }
+
         // Pencarian berdasarkan NIM, Nama, atau Kode Tiket
         if ($request->filled('search')) {
             $search = trim((string) $request->query('search'));
@@ -268,6 +276,76 @@ class PengajuanLayananController extends Controller
             'status' => 'success',
             'message' => "Status pengajuan {$pengajuan->kode_tiket} diubah menjadi '{$pengajuan->status}'.",
             'data' => $pengajuan,
+        ]);
+    }
+
+    /**
+     * Setujui pengajuan layanan oleh Administrator (APPROVE)
+     */
+    public function approve(Request $request, string $id): JsonResponse
+    {
+        $pengajuan = PengajuanLayanan::find($id);
+
+        if (!$pengajuan) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data pengajuan tidak ditemukan.',
+            ], 404);
+        }
+
+        $catatan = $request->input(
+            'catatan_petugas',
+            'Pengajuan telah diverifikasi dan disetujui oleh Administrator. Dokumen resmi telah diterbitkan.'
+        );
+
+        $pengajuan->status = 'selesai';
+        $pengajuan->catatan_petugas = $catatan;
+        $pengajuan->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => "Pengajuan {$pengajuan->kode_tiket} berhasil disetujui (Approved)!",
+            'data' => $pengajuan->fresh('layanan'),
+        ]);
+    }
+
+    /**
+     * Tolak pengajuan layanan oleh Administrator (REJECT)
+     */
+    public function reject(Request $request, string $id): JsonResponse
+    {
+        $pengajuan = PengajuanLayanan::find($id);
+
+        if (!$pengajuan) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data pengajuan tidak ditemukan.',
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'catatan_petugas' => ['required', 'string', 'min:5'],
+        ], [
+            'catatan_petugas.required' => 'Alasan penolakan pengajuan wajib diisi.',
+            'catatan_petugas.min' => 'Alasan penolakan minimal 5 karakter.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi data penolakan gagal.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $pengajuan->status = 'ditolak';
+        $pengajuan->catatan_petugas = $request->input('catatan_petugas');
+        $pengajuan->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => "Pengajuan {$pengajuan->kode_tiket} telah ditolak dengan catatan alasan resmi.",
+            'data' => $pengajuan->fresh('layanan'),
         ]);
     }
 }
