@@ -482,15 +482,19 @@ body {
   position: sticky;
   top: 0;
   z-index: 50;
+  width: 100%;
+  box-sizing: border-box;
   padding: 0.85rem 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   transition: background 0.3s ease;
 }
 
 .navbar-container {
+  width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: 0 0.5rem;
+  padding: 0;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -4044,28 +4048,30 @@ textarea.form-control {
    ========================================================================== */
 
 .vision-glass-container {
-  padding: 1.5rem 2rem 3rem 2rem;
-  max-width: 1440px;
-  margin: 0 auto;
+  padding: 1.25rem 2rem 3rem 2rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-/* Top Greeting Bar */
+/* Top Greeting Bar - Solid Dark Theme */
 .vision-glass-topbar {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 24px;
+  background: #0f172a; /* Solid Slate 900 */
+  border: 1px solid #1e293b; /* Solid Slate 800 */
+  border-radius: 16px;
   padding: 1.25rem 1.75rem;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
 .vision-greeting-group {
@@ -4075,24 +4081,23 @@ textarea.form-control {
 }
 
 .vision-avatar-pill {
-  width: 52px;
-  height: 52px;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #10b981, #047857);
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: #10b981; /* Solid Emerald */
   color: #ffffff;
   font-weight: 800;
   font-size: 1.35rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #34d399;
 }
 
 .vision-greeting-title {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #f8fafc;
   margin: 0;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -4100,7 +4105,7 @@ textarea.form-control {
 
 .vision-greeting-sub {
   font-size: 0.88rem;
-  color: #cbd5e1;
+  color: #94a3b8;
   margin: 0.2rem 0 0 0;
   display: flex;
   align-items: center;
@@ -4112,7 +4117,7 @@ textarea.form-control {
   align-items: center;
   gap: 0.35rem;
   padding: 0.2rem 0.65rem;
-  border-radius: 9999px;
+  border-radius: 6px;
   font-size: 0.76rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -4120,15 +4125,15 @@ textarea.form-control {
 }
 
 .vision-role-badge.admin {
-  background: rgba(239, 68, 68, 0.22);
+  background: #450a0a;
   color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.45);
+  border: 1px solid #7f1d1d;
 }
 
 .vision-role-badge.mahasiswa {
-  background: rgba(16, 185, 129, 0.22);
+  background: #064e3b;
   color: #6ee7b7;
-  border: 1px solid rgba(16, 185, 129, 0.45);
+  border: 1px solid #047857;
 }
 
 .vision-topbar-actions {
@@ -4143,62 +4148,59 @@ textarea.form-control {
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1.2rem;
-  border-radius: 9999px;
+  border-radius: 10px;
   font-size: 0.86rem;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  border: 1px solid #334155;
+  background: #1e293b; /* Solid Slate 800 */
+  color: #f8fafc;
   cursor: pointer;
-  backdrop-filter: blur(12px);
-  transition: all 0.22s ease;
+  transition: all 0.2s ease;
 }
 
 .btn-vision-pill:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.35);
+  background: #243248;
+  border-color: #475569;
   transform: translateY(-1px);
 }
 
 .btn-vision-pill.primary {
   background: #ffffff;
   color: #0f172a;
-  border: none;
+  border: 1px solid #ffffff;
   font-weight: 700;
-  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.25);
 }
 
 .btn-vision-pill.primary:hover {
-  background: #f8fafc;
-  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.35);
+  background: #f1f5f9;
 }
 
-/* Glass Dashboard Grid */
+/* Dashboard Grid - Full Width Proportional Scale */
 .vision-glass-grid-top {
   display: grid;
-  grid-template-columns: 360px 1fr 1fr;
+  grid-template-columns: minmax(320px, 1fr) minmax(380px, 1.2fr) minmax(480px, 1.55fr);
   gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .vision-glass-card {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(28px) saturate(170%);
-  -webkit-backdrop-filter: blur(28px) saturate(170%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 24px;
+  background: #0f172a; /* Solid Slate 900 */
+  border: 1px solid #1e293b; /* Solid Slate 800 */
+  border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .vision-glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.28);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border-color: #334155;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
-/* Card A: Balance Overview Style */
+/* Card A: Balance Overview Style (Solid) */
 .vision-balance-card {
   display: flex;
   flex-direction: column;
@@ -4225,12 +4227,12 @@ textarea.form-control {
   align-items: center;
   gap: 0.35rem;
   padding: 0.25rem 0.6rem;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: #1e293b;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  border: 1px solid #334155;
 }
 
 .vision-big-number {
@@ -4249,7 +4251,7 @@ textarea.form-control {
   gap: 0.35rem;
   font-size: 0.8rem;
   font-weight: 600;
-  color: #34d399;
+  color: #10b981;
 }
 
 .vision-btn-duo {
@@ -4261,7 +4263,7 @@ textarea.form-control {
 
 .btn-vision-action {
   padding: 0.72rem 0.5rem;
-  border-radius: 14px;
+  border-radius: 10px;
   font-size: 0.84rem;
   font-weight: 700;
   cursor: pointer;
@@ -4274,19 +4276,20 @@ textarea.form-control {
 }
 
 .btn-vision-action.dark {
-  background: rgba(15, 23, 42, 0.85);
+  background: #1e293b;
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid #334155;
 }
 
 .btn-vision-action.dark:hover {
-  background: rgba(15, 23, 42, 1);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: #243248;
+  border-color: #475569;
 }
 
 .btn-vision-action.white {
   background: #ffffff;
   color: #0f172a;
+  border: 1px solid #ffffff;
 }
 
 .btn-vision-action.white:hover {
@@ -4299,7 +4302,7 @@ textarea.form-control {
   grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
   padding-top: 0.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #1e293b;
 }
 
 .vision-breakdown-item {
@@ -4317,10 +4320,10 @@ textarea.form-control {
 .vision-breakdown-val {
   font-size: 1.05rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #f8fafc;
 }
 
-/* Card B: 4-Grid Quad Metrics */
+/* Card B: 4-Grid Quad Metrics (Uniform Solid Slate Theme - No Rainbow Clutter) */
 .vision-quad-metrics {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -4329,26 +4332,56 @@ textarea.form-control {
 }
 
 .vision-mini-metric-card {
-  background: rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 20px;
+  background: #1e293b; /* Solid Slate 800 - Uniform across all 4 cards */
+  border: 1px solid #334155; /* Solid Slate 700 - Uniform */
+  border-radius: 16px;
   padding: 1.15rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 0.75rem;
-  transition: all 0.22s ease;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .vision-mini-metric-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.28);
+  background: #243248;
+  border-color: #475569;
 }
 
-.vision-mini-metric-card.emerald {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.12));
-  border-color: rgba(52, 211, 153, 0.35);
+.vision-mini-metric-card:active {
+  transform: translateY(0);
+}
+
+/* Uniform Active Highlight for Filter Selection */
+.vision-mini-metric-card.active,
+.vision-mini-metric-card.emerald.active,
+.vision-mini-metric-card.blue.active,
+.vision-mini-metric-card.rose.active,
+.vision-mini-metric-card.violet.active {
+  background: #1e293b !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 1px #10b981;
+}
+
+/* Deprecate rainbow variants to keep cards uniform & solid */
+.vision-mini-metric-card.emerald,
+.vision-mini-metric-card.blue,
+.vision-mini-metric-card.rose,
+.vision-mini-metric-card.violet {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.vision-mini-metric-card.emerald:hover,
+.vision-mini-metric-card.blue:hover,
+.vision-mini-metric-card.rose:hover,
+.vision-mini-metric-card.violet:hover {
+  background: #243248;
+  border-color: #475569;
 }
 
 .vision-mini-top {
@@ -4366,13 +4399,20 @@ textarea.form-control {
 .vision-mini-icon {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: #0f172a;
+  border: 1px solid #334155;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  font-size: 0.75rem;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.vision-mini-metric-card.active .vision-mini-icon {
+  color: #10b981;
+  border-color: #10b981;
 }
 
 .vision-mini-num {
@@ -4391,24 +4431,30 @@ textarea.form-control {
   font-size: 0.73rem;
   font-weight: 600;
   color: #94a3b8;
+  transition: color 0.2s ease;
 }
 
-.vision-mini-metric-card.emerald .vision-mini-badge {
-  color: #6ee7b7;
+.vision-mini-metric-card:hover .vision-mini-badge {
+  color: #f1f5f9;
 }
 
-/* Card C: Activity Bar Chart */
+.vision-mini-metric-card.active .vision-mini-badge {
+  color: #34d399;
+}
+
+/* Card C: Activity Bar Chart (12 Months Dynamic - Solid Dark Style) */
 .vision-chart-card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .vision-chart-legend {
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: #94a3b8;
 }
@@ -4421,21 +4467,47 @@ textarea.form-control {
   margin-right: 0.35rem;
 }
 
+.legend-dot.solid-primary,
 .legend-dot.green {
   background: #10b981;
 }
 
+.legend-dot.solid-muted,
+.legend-dot.blue,
 .legend-dot.dark {
   background: #334155;
+}
+
+/* Solid Hover Info Banner in Chart */
+.chart-active-preview-bar {
+  background: #1e293b; /* Solid Slate 800 */
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.75rem;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+}
+
+.chart-preview-text {
+  color: #e2e8f0;
+  line-height: 1.4;
+}
+
+.chart-preview-sub {
+  color: #94a3b8;
+  margin-left: 0.35rem;
+  font-size: 0.72rem;
 }
 
 .vision-bar-chart-stage {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  height: 140px;
-  padding: 1rem 0 0.5rem 0;
-  gap: 0.5rem;
+  height: 155px;
+  padding: 0.75rem 0 0.35rem 0;
+  gap: 0.3rem;
 }
 
 .chart-bar-col {
@@ -4445,49 +4517,121 @@ textarea.form-control {
   align-items: center;
   height: 100%;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: 0.3rem;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.chart-bar-col:hover,
+.chart-bar-col.is-hovered {
+  transform: translateY(-2px);
+}
+
+.chart-bar-count-top {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  transition: color 0.2s ease;
+}
+
+.chart-bar-col:hover .chart-bar-count-top,
+.chart-bar-col.is-hovered .chart-bar-count-top {
+  color: #ffffff;
 }
 
 .chart-bar-pillar {
-  width: 14px;
+  width: 100%;
+  max-width: 18px;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
-  background: #1e293b;
+  background: #1e293b; /* Solid Slate 800 */
+  border: 1px solid #334155;
   position: relative;
-  transition: height 0.3s ease;
+  transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s;
+  min-height: 8px;
+}
+
+.chart-bar-col:hover .chart-bar-pillar,
+.chart-bar-col.is-hovered .chart-bar-pillar {
+  background: #243248;
+  border-color: #475569;
 }
 
 .chart-bar-segment-top {
   width: 100%;
-  background: #10b981;
-  border-radius: 6px 6px 0 0;
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  background: #10b981; /* Solid Emerald Fill */
+  border-radius: 4px 4px 0 0;
 }
 
 .chart-bar-col-label {
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.65rem;
+  font-weight: 700;
   color: #64748b;
   text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
-/* Bottom Grid of Glass Dashboard */
+.chart-bar-col:hover .chart-bar-col-label,
+.chart-bar-col.is-hovered .chart-bar-col-label {
+  color: #f1f5f9;
+}
+
+.chart-bar-user-tag {
+  font-size: 0.58rem;
+  color: #94a3b8;
+  font-weight: 600;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 0 0.25rem;
+  line-height: 1.2;
+}
+
+.chart-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.65rem;
+  border-top: 1px solid #1e293b;
+  font-size: 0.74rem;
+  color: #94a3b8;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chart-footer-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.badge-mini-user {
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.7rem;
+}
+
+/* Bottom Grid of Dashboard - Proportional Full Width */
 .vision-glass-grid-bottom {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: minmax(320px, 1fr) minmax(860px, 2.75fr);
   gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Card D: Digital Identification Card Mockup */
+/* Card D: Digital Identification Card Mockup (Solid Dark) */
 .vision-digital-id-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 24px;
+  background: #0f172a; /* Solid Slate 900 */
+  border: 1px solid #1e293b; /* Solid Slate 800 */
+  border-radius: 16px;
   padding: 1.6rem;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
   position: relative;
   overflow: hidden;
   display: flex;
@@ -4523,8 +4667,7 @@ textarea.form-control {
   width: 36px;
   height: 28px;
   border-radius: 6px;
-  background: linear-gradient(135deg, #fbbf24, #d97706);
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  background: #d97706; /* Solid Amber */
   position: relative;
 }
 
@@ -4532,7 +4675,7 @@ textarea.form-control {
   content: '';
   position: absolute;
   inset: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.25);
   border-radius: 3px;
 }
 
@@ -4572,7 +4715,7 @@ textarea.form-control {
   margin: 0.15rem 0 0 0;
 }
 
-/* Card E: Recent Activities Table */
+/* Card E: Recent Activities Table (Solid Dark) */
 .vision-recent-activities-card {
   display: flex;
   flex-direction: column;
@@ -4598,17 +4741,17 @@ textarea.form-control {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background: rgba(0, 0, 0, 0.25);
+  background: #1e293b; /* Solid Slate 800 */
   padding: 0.25rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  border: 1px solid #334155;
 }
 
 .filter-pill-btn {
   background: transparent;
   border: none;
   padding: 0.35rem 0.85rem;
-  border-radius: 9999px;
+  border-radius: 6px;
   font-size: 0.76rem;
   font-weight: 600;
   color: #94a3b8;
@@ -4624,7 +4767,6 @@ textarea.form-control {
   background: #ffffff;
   color: #0f172a;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .vision-activities-list {
@@ -4634,21 +4776,20 @@ textarea.form-control {
 }
 
 .vision-activity-row {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  background: #1e293b; /* Solid Slate 800 */
+  border: 1px solid #334155;
+  border-radius: 12px;
   padding: 0.85rem 1.15rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .vision-activity-row:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateX(3px);
+  background: #243248;
+  border-color: #475569;
 }
 
 .vision-row-left {
@@ -4659,14 +4800,15 @@ textarea.form-control {
 }
 
 .vision-row-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #0f172a;
+  border: 1px solid #334155;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: #94a3b8;
   flex-shrink: 0;
 }
 
@@ -4702,11 +4844,11 @@ textarea.form-control {
 }
 
 .btn-vision-detail {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #0f172a;
+  border: 1px solid #334155;
   color: #ffffff;
   padding: 0.4rem 0.8rem;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
@@ -4719,11 +4861,11 @@ textarea.form-control {
 }
 
 /* Responsive Grid for Glass Dashboard */
-@media (max-width: 1200px) {
+@media (max-width: 1280px) {
   .vision-glass-grid-top {
     grid-template-columns: 1fr 1fr;
   }
-  .vision-glass-card:first-child {
+  .vision-chart-card {
     grid-column: span 2;
   }
   .vision-glass-grid-bottom {
@@ -4733,16 +4875,16 @@ textarea.form-control {
 
 @media (max-width: 768px) {
   .vision-glass-container {
-    padding: 1rem;
+    padding: 0.85rem;
   }
   .vision-glass-grid-top {
     grid-template-columns: 1fr;
   }
-  .vision-glass-card:first-child {
+  .vision-chart-card {
     grid-column: span 1;
   }
   .vision-quad-metrics {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
   .vision-glass-topbar {
     flex-direction: column;

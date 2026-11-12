@@ -846,29 +846,37 @@
             <div class="vision-status-breakdown">
               <div class="vision-breakdown-item">
                 <span class="vision-breakdown-label">Selesai</span>
-                <span class="vision-breakdown-val" style="color: #34d399;">
+                <span class="vision-breakdown-val">
                   {{ mySubmissionsList.filter(s => s.status === 'selesai').length }}
                 </span>
               </div>
               <div class="vision-breakdown-item">
                 <span class="vision-breakdown-label">Diproses</span>
-                <span class="vision-breakdown-val" style="color: #60a5fa;">
+                <span class="vision-breakdown-val">
                   {{ mySubmissionsList.filter(s => s.status === 'diproses').length }}
                 </span>
               </div>
               <div class="vision-breakdown-item">
                 <span class="vision-breakdown-label">Menunggu</span>
-                <span class="vision-breakdown-val" style="color: #fbbf24;">
+                <span class="vision-breakdown-val">
                   {{ mySubmissionsList.filter(s => s.status === 'menunggu').length }}
                 </span>
               </div>
             </div>
           </div>
 
-          <!-- Card B: 4-Grid Quad Mini Metrics -->
+          <!-- Card B: 4-Grid Quad Mini Metrics (Uniform Solid Interactive Filters) -->
           <div class="vision-quad-metrics">
-            <!-- 1. Selesai / Terbit (Emerald) -->
-            <div class="vision-mini-metric-card emerald">
+            <!-- 1. Disetujui / Selesai -->
+            <div
+              class="vision-mini-metric-card"
+              :class="{ active: dashboardFilterStatus === 'selesai' }"
+              role="button"
+              tabindex="0"
+              title="Klik untuk melihat pengajuan yang sudah disetujui"
+              @click="selectDashboardFilter('selesai')"
+              @keydown.enter="selectDashboardFilter('selesai')"
+            >
               <div class="vision-mini-top">
                 <span class="vision-mini-label">Disetujui / Selesai</span>
                 <div class="vision-mini-icon">✓</div>
@@ -877,12 +885,20 @@
                 {{ mySubmissionsList.filter(s => s.status === 'selesai').length }}
               </div>
               <div class="vision-mini-badge">
-                <span>Dokumen Resmi Terbit</span>
+                <span>Lihat Berkas Disetujui &rarr;</span>
               </div>
             </div>
 
             <!-- 2. Sedang Diproses -->
-            <div class="vision-mini-metric-card">
+            <div
+              class="vision-mini-metric-card"
+              :class="{ active: dashboardFilterStatus === 'diproses' }"
+              role="button"
+              tabindex="0"
+              title="Klik untuk melihat pengajuan yang sedang diproses"
+              @click="selectDashboardFilter('diproses')"
+              @keydown.enter="selectDashboardFilter('diproses')"
+            >
               <div class="vision-mini-top">
                 <span class="vision-mini-label">Sedang Diproses</span>
                 <div class="vision-mini-icon">⚡</div>
@@ -891,26 +907,42 @@
                 {{ mySubmissionsList.filter(s => s.status === 'diproses').length }}
               </div>
               <div class="vision-mini-badge">
-                <span>Dalam Verifikasi Staf</span>
+                <span>Pantau Verifikasi Staf &rarr;</span>
               </div>
             </div>
 
-            <!-- 3. Menunggu Review -->
-            <div class="vision-mini-metric-card">
+            <!-- 3. Ditolak (Perlu Perbaikan) -->
+            <div
+              class="vision-mini-metric-card"
+              :class="{ active: dashboardFilterStatus === 'ditolak' }"
+              role="button"
+              tabindex="0"
+              title="Klik untuk melihat pengajuan yang ditolak"
+              @click="selectDashboardFilter('ditolak')"
+              @keydown.enter="selectDashboardFilter('ditolak')"
+            >
               <div class="vision-mini-top">
-                <span class="vision-mini-label">Menunggu Antrean</span>
-                <div class="vision-mini-icon">⏳</div>
+                <span class="vision-mini-label">Ditolak</span>
+                <div class="vision-mini-icon">✕</div>
               </div>
               <div class="vision-mini-num">
-                {{ mySubmissionsList.filter(s => s.status === 'menunggu').length }}
+                {{ mySubmissionsList.filter(s => s.status === 'ditolak').length }}
               </div>
               <div class="vision-mini-badge">
-                <span>Menunggu Pemeriksaan</span>
+                <span>Perlu Perbaikan Berkas &rarr;</span>
               </div>
             </div>
 
-            <!-- 4. Layanan Aktif -->
-            <div class="vision-mini-metric-card">
+            <!-- 4. Layanan Tersedia (Semua Pengajuan) -->
+            <div
+              class="vision-mini-metric-card"
+              :class="{ active: dashboardFilterStatus === 'semua' }"
+              role="button"
+              tabindex="0"
+              title="Klik untuk melihat list semua pengajuan"
+              @click="selectDashboardFilter('semua')"
+              @keydown.enter="selectDashboardFilter('semua')"
+            >
               <div class="vision-mini-top">
                 <span class="vision-mini-label">Layanan Tersedia</span>
                 <div class="vision-mini-icon">🏛️</div>
@@ -919,105 +951,92 @@
                 {{ masterLayanan.length || 18 }}
               </div>
               <div class="vision-mini-badge">
-                <span>Katalog Digital UMPKU</span>
+                <span>Lihat Semua Pengajuan &rarr;</span>
               </div>
             </div>
           </div>
 
-          <!-- Card C: Activity Bar Chart Mockup (Matching Image Reference) -->
+          <!-- Card C: Aktivitas Bulanan (12 Bulan Fungsional: Pengajuan & User per Bulan) -->
           <div class="vision-glass-card vision-chart-card">
             <div class="vision-card-header-row">
               <div>
-                <span class="vision-card-title">Aktivitas Bulanan</span>
-                <h4 style="margin: 0.2rem 0 0 0; font-size: 0.95rem; color: #ffffff; font-weight: 700;">Tren Pengajuan Dokumen</h4>
+                <span class="vision-card-title">Aktivitas Bulanan (12 Bulan)</span>
+                <h4 style="margin: 0.2rem 0 0 0; font-size: 0.95rem; color: #ffffff; font-weight: 700;">
+                  Tren Pengajuan Dokumen & Mahasiswa Pemohon
+                </h4>
               </div>
               <div class="vision-chart-legend">
-                <span><span class="legend-dot green"></span>Selesai</span>
-                <span><span class="legend-dot dark"></span>Proses</span>
+                <span><span class="legend-dot solid-primary"></span>Disetujui</span>
+                <span><span class="legend-dot solid-muted"></span>Total Pengajuan</span>
               </div>
             </div>
 
-            <!-- CSS Bar Chart (Jan - Okt) -->
+            <!-- Interaktif Live Hover Readout -->
+            <div class="chart-active-preview-bar">
+              <span v-if="hoveredMonthStat" class="chart-preview-text">
+                Bulan <strong>{{ hoveredMonthStat.fullName }}</strong>: 
+                <span class="text-primary font-bold">{{ hoveredMonthStat.submissionsCount }} Pengajuan</span> 
+                dari <span style="color: #38bdf8; font-weight: 700;">{{ hoveredMonthStat.usersCount }} Mahasiswa</span>
+                <span class="chart-preview-sub">({{ hoveredMonthStat.selesaiCount }} Disetujui, {{ hoveredMonthStat.diprosesCount }} Diproses, {{ hoveredMonthStat.menungguCount }} Menunggu, {{ hoveredMonthStat.ditolakCount }} Ditolak)</span>
+              </span>
+              <span v-else class="chart-preview-text text-muted">
+                Statistik riil 12 bulan: arahkan kursor pada diagram batang untuk detail pengajuan & mahasiswa per bulan
+              </span>
+            </div>
+
+            <!-- CSS Bar Chart (12 Bulan Lengkap: Jan - Des) -->
             <div class="vision-bar-chart-stage">
-              <div class="chart-bar-col">
-                <div class="chart-bar-pillar" style="height: 65%;">
-                  <div class="chart-bar-segment-top" style="height: 55%;"></div>
-                </div>
-                <span class="chart-bar-col-label">Jan</span>
-              </div>
+              <div
+                v-for="month in monthlyChartStats"
+                :key="month.monthIndex"
+                class="chart-bar-col"
+                :class="{
+                  'is-hovered': hoveredMonthStat?.monthIndex === month.monthIndex,
+                  'has-data': month.submissionsCount > 0
+                }"
+                @mouseenter="hoveredMonthStat = month"
+                @mouseleave="hoveredMonthStat = null"
+                :title="month.fullName + ': ' + month.submissionsCount + ' Pengajuan (' + month.usersCount + ' Mahasiswa Pemohon)'"
+              >
+                <!-- Angka Pengajuan di Atas Batang -->
+                <span class="chart-bar-count-top">
+                  {{ month.submissionsCount }}
+                </span>
 
-              <div class="chart-bar-col">
-                <div class="chart-bar-pillar" style="height: 85%;">
-                  <div class="chart-bar-segment-top" style="height: 65%;"></div>
+                <!-- Batang Diagram -->
+                <div class="chart-bar-pillar" :style="{ height: month.percent + '%' }">
+                  <div
+                    v-if="month.selesaiCount > 0"
+                    class="chart-bar-segment-top"
+                    :style="{ height: Math.max(25, Math.round((month.selesaiCount / (month.submissionsCount || 1)) * 100)) + '%' }"
+                  ></div>
                 </div>
-                <span class="chart-bar-col-label">Feb</span>
-              </div>
 
-              <div class="chart-bar-col">
-                <div class="chart-bar-pillar" style="height: 45%;">
-                  <div class="chart-bar-segment-top" style="height: 40%;"></div>
-                </div>
-                <span class="chart-bar-col-label">Mar</span>
-              </div>
-
-              <div class="chart-bar-col">
-                <div class="chart-bar-pillar" style="height: 95%;">
-                  <div class="chart-bar-segment-top" style="height: 75%;"></div>
-                </div>
-                <span class="chart-bar-col-label">Apr</span>
-              </div>
-
-              <div class="chart-bar-col">
-                <div class="chart-bar-pillar" style="height: 70%;">
-                  <div class="chart-bar-segment-top" style="height: 50%;"></div>
-                </div>
-                <span class="chart-bar-col-label">Mei</span>
-              </div>
-
-              <div class="chart-bar-col">
-                <div class="chart-bar-pillar" style="height: 55%;">
-                  <div class="chart-bar-segment-top" style="height: 45%;"></div>
-                </div>
-                <span class="chart-bar-col-label">Jun</span>
-              </div>
-
-              <div class="chart-bar-col">
-                <div class="chart-bar-pillar" style="height: 80%;">
-                  <div class="chart-bar-segment-top" style="height: 60%;"></div>
-                </div>
-                <span class="chart-bar-col-label">Jul</span>
-              </div>
-
-              <div class="chart-bar-col">
-                <div class="chart-bar-pillar" style="height: 90%;">
-                  <div class="chart-bar-segment-top" style="height: 70%;"></div>
-                </div>
-                <span class="chart-bar-col-label">Ags</span>
-              </div>
-
-              <div class="chart-bar-col">
-                <div class="chart-bar-pillar" style="height: 75%;">
-                  <div class="chart-bar-segment-top" style="height: 55%;"></div>
-                </div>
-                <span class="chart-bar-col-label">Sep</span>
-              </div>
-
-              <div class="chart-bar-col">
-                <div class="chart-bar-pillar" style="height: 100%;">
-                  <div class="chart-bar-segment-top" style="height: 80%;"></div>
-                </div>
-                <span class="chart-bar-col-label">Okt</span>
+                <!-- Label Nama Bulan -->
+                <span class="chart-bar-col-label">{{ month.shortName }}</span>
+                <!-- Badge Jumlah User yang Mengajukan -->
+                <span class="chart-bar-user-tag" :title="month.usersCount + ' Mahasiswa Pemohon'">
+                  {{ month.usersCount }}u
+                </span>
               </div>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.6rem; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.76rem; color: #94a3b8;">
-              <span>Rata-rata Waktu Proses: <strong>1-2 Hari Kerja</strong></span>
-              <span style="color: #34d399; font-weight: 700;">+24% Efisiensi Digital</span>
+            <!-- Footer Card Metrics -->
+            <div class="chart-card-footer">
+              <div class="chart-footer-stat">
+                <span class="text-muted">Total Tahun Ini:</span>
+                <strong style="color: #f8fafc;">{{ totalYearSubmissions }} Pengajuan</strong>
+                <span class="badge-mini-user">({{ totalYearUniqueUsers }} Mahasiswa)</span>
+              </div>
+              <div class="chart-footer-stat">
+                <span class="text-muted">Puncak Aktivitas:</span>
+                <strong style="color: #34d399;">{{ peakMonth.fullName }} ({{ peakMonth.submissionsCount }} Berkas)</strong>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Lower Grid: Digital ID Card + Recent Activities -->
+        <!-- Lower Grid: Digital ID Card + Recent Activities (Aligned Proportional Grid) -->
         <div class="vision-glass-grid-bottom">
           <!-- Card D: Digital Identification Card Mockup -->
           <div class="vision-digital-id-card">
@@ -1056,11 +1075,11 @@
             </div>
           </div>
 
-          <!-- Card E: Recent Activities Table -->
-          <div class="vision-glass-card vision-recent-activities-card">
+          <!-- Card E: Recent Activities Table (Aktivitas Pengajuan Saya) -->
+          <div class="vision-glass-card vision-recent-activities-card" id="aktivitas-pengajuan-saya">
             <div class="vision-activities-header">
               <h3 class="vision-activities-title">
-                Aktivitas Pengajuan Terakhir Saya
+                Aktivitas Pengajuan Saya
               </h3>
 
               <div class="vision-filter-pills-row">
@@ -1073,10 +1092,10 @@
                 </button>
                 <button
                   class="filter-pill-btn"
-                  :class="{ active: dashboardFilterStatus === 'menunggu' }"
-                  @click="dashboardFilterStatus = 'menunggu'"
+                  :class="{ active: dashboardFilterStatus === 'selesai' }"
+                  @click="dashboardFilterStatus = 'selesai'"
                 >
-                  Menunggu
+                  Disetujui
                 </button>
                 <button
                   class="filter-pill-btn"
@@ -1087,10 +1106,17 @@
                 </button>
                 <button
                   class="filter-pill-btn"
-                  :class="{ active: dashboardFilterStatus === 'selesai' }"
-                  @click="dashboardFilterStatus = 'selesai'"
+                  :class="{ active: dashboardFilterStatus === 'ditolak' }"
+                  @click="dashboardFilterStatus = 'ditolak'"
                 >
-                  Selesai
+                  Ditolak
+                </button>
+                <button
+                  class="filter-pill-btn"
+                  :class="{ active: dashboardFilterStatus === 'menunggu' }"
+                  @click="dashboardFilterStatus = 'menunggu'"
+                >
+                  Menunggu
                 </button>
               </div>
             </div>
@@ -2812,13 +2838,132 @@ const mySubmissionsList = computed(() => {
 })
 
 // Dashboard Recent Activities (Dual Mode: Admin vs Mahasiswa)
-const dashboardFilterStatus = ref('semua')
+const dashboardFilterStatus = ref<'semua' | 'selesai' | 'diproses' | 'ditolak' | 'menunggu'>('semua')
 const dashboardRecentActivities = computed(() => {
   const base = mySubmissionsList.value
   if (dashboardFilterStatus.value === 'semua') {
-    return base.slice(0, 7)
+    return base.slice(0, 10)
   }
-  return base.filter(item => item.status === dashboardFilterStatus.value).slice(0, 7)
+  return base.filter(item => item.status === dashboardFilterStatus.value).slice(0, 10)
+})
+
+function selectDashboardFilter(status: 'semua' | 'selesai' | 'diproses' | 'ditolak' | 'menunggu') {
+  dashboardFilterStatus.value = status
+  nextTick(() => {
+    const el = document.getElementById('aktivitas-pengajuan-saya')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  })
+}
+
+// 12-Month Dynamic Activity Stats (Berapa Pengajuan & Berapa User per Bulan)
+export interface MonthStatItem {
+  monthIndex: number
+  shortName: string
+  fullName: string
+  submissionsCount: number
+  usersCount: number
+  selesaiCount: number
+  diprosesCount: number
+  menungguCount: number
+  ditolakCount: number
+  percent: number
+}
+
+const hoveredMonthStat = ref<MonthStatItem | null>(null)
+
+const MONTH_NAMES_ID = [
+  { short: 'Jan', full: 'Januari' },
+  { short: 'Feb', full: 'Februari' },
+  { short: 'Mar', full: 'Maret' },
+  { short: 'Apr', full: 'April' },
+  { short: 'Mei', full: 'Mei' },
+  { short: 'Jun', full: 'Juni' },
+  { short: 'Jul', full: 'Juli' },
+  { short: 'Ags', full: 'Agustus' },
+  { short: 'Sep', full: 'September' },
+  { short: 'Okt', full: 'Oktober' },
+  { short: 'Nov', full: 'November' },
+  { short: 'Des', full: 'Desember' }
+]
+
+const monthlyChartStats = computed<MonthStatItem[]>(() => {
+  const monthsData: MonthStatItem[] = MONTH_NAMES_ID.map((m, idx) => ({
+    monthIndex: idx,
+    shortName: m.short,
+    fullName: m.full,
+    submissionsCount: 0,
+    usersCount: 0,
+    selesaiCount: 0,
+    diprosesCount: 0,
+    menungguCount: 0,
+    ditolakCount: 0,
+    percent: 8
+  }))
+
+  const userSets: Set<string>[] = Array.from({ length: 12 }, () => new Set<string>())
+
+  for (const item of pengajuanList.value) {
+    const rawDate = item.tanggal_pengajuan || item.created_at
+    if (!rawDate) continue
+    const date = new Date(rawDate)
+    if (isNaN(date.getTime())) continue
+
+    const mIdx = date.getMonth()
+    if (mIdx >= 0 && mIdx < 12) {
+      monthsData[mIdx].submissionsCount++
+      const userKey = (item.email || item.nim || item.nama_mahasiswa || '').toLowerCase().trim()
+      if (userKey) {
+        userSets[mIdx].add(userKey)
+      }
+      if (item.status === 'selesai') monthsData[mIdx].selesaiCount++
+      else if (item.status === 'diproses') monthsData[mIdx].diprosesCount++
+      else if (item.status === 'menunggu') monthsData[mIdx].menungguCount++
+      else if (item.status === 'ditolak') monthsData[mIdx].ditolakCount++
+    }
+  }
+
+  let maxCount = 1
+  for (let i = 0; i < 12; i++) {
+    monthsData[i].usersCount = userSets[i].size
+    if (monthsData[i].submissionsCount > maxCount) {
+      maxCount = monthsData[i].submissionsCount
+    }
+  }
+
+  for (let i = 0; i < 12; i++) {
+    if (monthsData[i].submissionsCount === 0) {
+      monthsData[i].percent = 8
+    } else {
+      monthsData[i].percent = Math.max(18, Math.round((monthsData[i].submissionsCount / maxCount) * 100))
+    }
+  }
+
+  return monthsData
+})
+
+const totalYearSubmissions = computed(() => {
+  return monthlyChartStats.value.reduce((acc, m) => acc + m.submissionsCount, 0)
+})
+
+const totalYearUniqueUsers = computed(() => {
+  const allUsers = new Set<string>()
+  for (const item of pengajuanList.value) {
+    const key = (item.email || item.nim || item.nama_mahasiswa || '').toLowerCase().trim()
+    if (key) allUsers.add(key)
+  }
+  return allUsers.size
+})
+
+const peakMonth = computed(() => {
+  let highest = monthlyChartStats.value[0] || { fullName: 'Januari', submissionsCount: 0 }
+  for (const m of monthlyChartStats.value) {
+    if (m.submissionsCount > highest.submissionsCount) {
+      highest = m
+    }
+  }
+  return highest
 })
 
 // Filter State
